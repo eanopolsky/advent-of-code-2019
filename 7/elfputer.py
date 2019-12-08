@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from queue import Queue
+from itertools import permutations
 
 debug = False
 
@@ -26,6 +27,7 @@ class elfputer:
         self.running = False
         self.inputqueue = Queue()
         self.getinput = input
+        self.output = print
 
     def setinputmode(self,mode):
         if mode == "stdin":
@@ -35,6 +37,16 @@ class elfputer:
         else:
             print("unsupported input mode")
             exit(1)
+
+    def queueinput(self,value):
+        self.inputqueue.put(value)
+            
+    def setoutputfunc(self,func):
+        self.output = func
+
+    # def setoutputmode(self,mode):
+    #     if mode == "print":
+    #         self.output = print
 
     def __decode(self,ip):
         #low two digits are the instruction
@@ -102,7 +114,7 @@ class elfputer:
             self.memory[deci["parameters"][0]] = int(self.getinput())
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "output":
-            print(str(self.__dereference(deci,0)))
+            self.output(self.__dereference(deci,0))
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "jump-if-true":
             testvalue = self.__dereference(deci,0)
@@ -143,8 +155,37 @@ class elfputer:
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
-    e = elfputer(memory)
-    e.setinputmode("queue")
-    e.inputqueue.put(1)
-    e.inputqueue.put(1)
-    e.run()
+    for permutation in permutations([0,1,2,3,4]):
+        A = elfputer(memory.copy())
+        A.setinputmode("queue")
+        A.queueinput(permutation[0])
+        A.queueinput(0)
+        B = elfputer(memory.copy())
+        B.setinputmode("queue")
+        B.queueinput(permutation[1])
+        C = elfputer(memory.copy())
+        C.setinputmode("queue")
+        C.queueinput(permutation[2])
+        D = elfputer(memory.copy())
+        D.setinputmode("queue")
+        D.queueinput(permutation[3])
+        E = elfputer(memory.copy())
+        E.setinputmode("queue")
+        E.queueinput(permutation[4])
+        A.setoutputfunc(B.queueinput)
+        B.setoutputfunc(C.queueinput)
+        C.setoutputfunc(D.queueinput)
+        D.setoutputfunc(E.queueinput)
+        A.run()
+        B.run()
+        C.run()
+        D.run()
+        print(permutation)
+        E.run()
+        
+        
+    #e = elfputer(memory)
+    #e.setinputmode("queue")
+    #e.inputqueue.put(1)
+    #e.inputqueue.put(1)
+    #e.run()
