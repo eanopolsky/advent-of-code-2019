@@ -161,6 +161,7 @@ class elfputer:
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
+    results = []
     for permutation in permutations([0,1,2,3,4]):
         A = elfputer(memory.copy())
         A.setinputmode("queue")
@@ -188,13 +189,7 @@ if __name__ == "__main__":
         C.run()
         D.run()
         E.run()
-        print(permutation)
-        print(E.getoutput())
-
-        
-        
-    #e = elfputer(memory)
-    #e.setinputmode("queue")
-    #e.inputqueue.put(1)
-    #e.inputqueue.put(1)
-    #e.run()
+        #print(permutation)
+        results.append({"permutation":permutation,"thrustvalue":E.getoutput()})
+    results.sort(key=lambda x:x["thrustvalue"],reverse=True)
+    print(results[0])
