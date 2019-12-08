@@ -17,23 +17,20 @@ for i in range(numlayers):
             layer[(x,y)] = int(pixelstring[width*height*i + width*y + x])
     layers.append(layer)
 
-zerocounts = []
-for i in range(len(layers)):
-    layer = layers[i]
-    zerocount = 0
-    for pixel in layer:
-        if layer[pixel] == 0:
-            zerocount += 1
-    zerocounts.append({"layernum":i,"zerocount":zerocount})
-zerocounts.sort(key=lambda z:z["zerocount"])
-fewestzeroeslayer = zerocounts[0]["layernum"]
-#print(fewestzeroeslayer)
-numones = 0
-numtwos = 0
-for pixel in layers[fewestzeroeslayer]:
-    if layers[fewestzeroeslayer][pixel] == 1:
-        numones += 1
-    if layers[fewestzeroeslayer][pixel] == 2:
-        numtwos += 1
-print(numones*numtwos)
+compositeimage = layers[0].copy()
+for layer in layers:
+    for x in range(width):
+        for y in range(height):
+            if compositeimage[(x,y)] == 2:
+                compositeimage[(x,y)] = layer[(x,y)]
 
+for y in range(height):
+    for x in range(width):
+        if compositeimage[(x,y)] == 0:
+            print(" ",end="")
+        elif compositeimage[(x,y)] == 1:
+            print("#",end="")
+        else:
+            print("error")
+            exit(1)
+    print("")
