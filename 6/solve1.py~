@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+
+with open("orbitmap.txt") as f:
+    orbits = f.readlines()
+orbits = [x.strip() for x in content]
+
+for 

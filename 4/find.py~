@@ -1,0 +1,14 @@
+#!/usr/bin/python
+
+import re
+
+i = 245318
+
+count = 0
+
+prog = re.compile(".+")
+while (i <= 765747):
+    if not prog.match(str(i)):
+        i += 1
+        continue
+    if 

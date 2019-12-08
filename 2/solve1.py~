@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+
+memory = [1,9,10,3,2,3,11,0,99,30,40,50]
+
+ip = 0
+
+while (True):
+    if memory[ip] == 1:
+        memory[ip+3] = memory[ip+1] + memory[ip+2]
+    elif memory[ip] == 2:
+        memory[ip+3] = memory[ip+1] * memory[ip+2]
+    elif memory[ip] == 99:
+        print("Program finished")
+        break
+    else:
+        print("Invalid opcode")
+        exit(1)
+        
