@@ -2,6 +2,7 @@
 
 from queue import Queue
 from itertools import permutations
+import threading
 
 debug = False
 
@@ -162,7 +163,7 @@ if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
     results = []
-    for permutation in permutations([0,1,2,3,4]):
+    for permutation in permutations([5,6,7,8,9]):
         A = elfputer(memory.copy())
         A.setinputmode("queue")
         A.queueinput(permutation[0])
@@ -183,13 +184,18 @@ if __name__ == "__main__":
         B.setoutputfunc(C.queueinput)
         C.setoutputfunc(D.queueinput)
         D.setoutputfunc(E.queueinput)
-        E.setoutputmode("queue")
-        A.run()
-        B.run()
-        C.run()
-        D.run()
-        E.run()
+        E.setoutputfunc(A.queueinput)
+        Athread = threading.Thread(group=None,target=A.run)
+        Bthread = threading.Thread(group=None,target=B.run)
+        Cthread = threading.Thread(group=None,target=C.run)
+        Dthread = threading.Thread(group=None,target=D.run)
+        Ethread = threading.Thread(group=None,target=E.run)
+        threads = [Athread, Bthread, Cthread, Dthread, Ethread]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
         #print(permutation)
-        results.append({"permutation":permutation,"thrustvalue":E.getoutput()})
+        results.append({"permutation":permutation,"thrustvalue":A.getinput()})
     results.sort(key=lambda x:x["thrustvalue"],reverse=True)
     print(results[0])
