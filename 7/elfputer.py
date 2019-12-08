@@ -27,6 +27,7 @@ class elfputer:
         self.running = False
         self.inputqueue = Queue()
         self.getinput = input
+        self.outputqueue = Queue()
         self.output = print
 
     def setinputmode(self,mode):
@@ -44,9 +45,14 @@ class elfputer:
     def setoutputfunc(self,func):
         self.output = func
 
-    # def setoutputmode(self,mode):
-    #     if mode == "print":
-    #         self.output = print
+    def setoutputmode(self,mode):
+        if mode == "print":
+            self.output = print
+        elif mode == "queue":
+            self.output = self.outputqueue.put
+
+    def getoutput(self):
+        return self.outputqueue.get()
 
     def __decode(self,ip):
         #low two digits are the instruction
@@ -176,12 +182,15 @@ if __name__ == "__main__":
         B.setoutputfunc(C.queueinput)
         C.setoutputfunc(D.queueinput)
         D.setoutputfunc(E.queueinput)
+        E.setoutputmode("queue")
         A.run()
         B.run()
         C.run()
         D.run()
-        print(permutation)
         E.run()
+        print(permutation)
+        print(E.getoutput())
+
         
         
     #e = elfputer(memory)
