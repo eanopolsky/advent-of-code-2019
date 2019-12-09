@@ -6,7 +6,7 @@ import threading
 
 debug = False
 
-class elfputer:
+class intcodevm:
     #instructions
     decodemap = {1: {"name":"add","parameters":3},
                  2: {"name":"multiply","parameters":3},
@@ -164,20 +164,20 @@ if __name__ == "__main__":
         memory = [int(x) for x in f.readline().split(",")]
     results = []
     for permutation in permutations([5,6,7,8,9]):
-        A = elfputer(memory.copy())
+        A = intcodevm(memory.copy())
         A.setinputmode("queue")
         A.queueinput(permutation[0])
         A.queueinput(0)
-        B = elfputer(memory.copy())
+        B = intcodevm(memory.copy())
         B.setinputmode("queue")
         B.queueinput(permutation[1])
-        C = elfputer(memory.copy())
+        C = intcodevm(memory.copy())
         C.setinputmode("queue")
         C.queueinput(permutation[2])
-        D = elfputer(memory.copy())
+        D = intcodevm(memory.copy())
         D.setinputmode("queue")
         D.queueinput(permutation[3])
-        E = elfputer(memory.copy())
+        E = intcodevm(memory.copy())
         E.setinputmode("queue")
         E.queueinput(permutation[4])
         A.setoutputfunc(B.queueinput)
