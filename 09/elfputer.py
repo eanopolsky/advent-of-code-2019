@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
-#To implement for day 9:
-# * parameters in relative mode
+#TODO: implement iomanager and hypervisor
 
 from queue import Queue
 from itertools import permutations
