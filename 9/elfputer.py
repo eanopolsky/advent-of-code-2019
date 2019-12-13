@@ -66,6 +66,7 @@ class intcodevm:
                  6: {"name":"jump-if-false","parameters":2},
                  7: {"name":"less than","parameters":3},
                  8: {"name":"equals","parameters":3},
+                 9: {"name":"adj-relbase","parameters":1},
                  99: {"name":"halt","parameters":0}}
 
     #parameter modes for instructions
