@@ -39,7 +39,7 @@ class memorymanager:
     def __readsingle(self,i):
         try:
             return self.memdict[i]
-        except IndexError:
+        except KeyError:
             return 0
     def __getitem__(self,key):
         if type(key) == type(int()):
