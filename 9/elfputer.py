@@ -70,7 +70,8 @@ class intcodevm:
 
     #parameter modes for instructions
     pmodemap = {0: "position",
-                1: "immediate"}
+                1: "immediate",
+                2: "relative"}
 
     def __init__(self, memory, name):
         self.name = name
@@ -150,6 +151,8 @@ class intcodevm:
             return deci["parameters"][paramnum]
         elif deci["parametermodes"][paramnum] == "position":
             return self.memory[deci["parameters"][paramnum]]
+        elif deci["parametermodes"][paramnum] == "relative":
+            return self.memory[deci["parameters"][paramnum]+self.registers["relbase"]]
         else:
             print("fetch from unsupported parameter mode")
             exit(1)
@@ -162,11 +165,12 @@ class intcodevm:
         elif deci["parametermodes"][paramnum] == "position":
             self.memory[deci["parameters"][paramnum]] = value
             return
+        elif deci["parametermodes"][paramnum] == "relative":
+            self.memory[deci["parameters"][paramnum]+self.registers["relbase"]] = value
+            return
         else:
             print("store to unsupported parameter mode")
             exit(1)
-
-        pass
     
     #executes a decoded instruction
     def __execute(self,deci):
