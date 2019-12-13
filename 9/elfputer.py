@@ -120,9 +120,6 @@ class intcodevm:
         instruction["parametercount"] = self.decodemap[rawinstruction]["parameters"]
         instruction["parameters"] = self.memory[ip+1:ip+1+instruction["parametercount"]]
         instruction["size"] = instruction["parametercount"]+1
-        #Doesn't make sense for this to be part of decode because it could be
-        #affected during execution when jmp instructions are introduced.
-        #instruction["nextip"] = ip + 1 + instruction["parametercount"]
 
         parametermodes = {}
         parameters = {}
