@@ -64,7 +64,7 @@ while len(vaporizedtargets) < 200:
     #advance the laser regardless of hit or miss
     higherangletargets = list(filter(lambda t: cmath.polar(t-station)[1] > laserangle,remainingtargets))
     if len(higherangletargets) == 0:
-        laserangle=0
+        laserangle=-1 * pi
     else:
         higherangletargets.sort(key=lambda t:cmath.polar(t-station)[1])
         lowestnextangle = cmath.polar(higherangletargets[0]-station)[1]
