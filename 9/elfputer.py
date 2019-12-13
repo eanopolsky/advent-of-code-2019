@@ -2,7 +2,6 @@
 
 #To implement for day 9:
 # * parameters in relative mode
-# * relative base register
 # * opcode 9: adjust relative base
 
 from queue import Queue
@@ -76,7 +75,8 @@ class intcodevm:
     def __init__(self, memory, name):
         self.name = name
         self.memory = memorymanager(memory)
-        self.registers = {"ip": 0}
+        self.registers = {"ip": 0,
+                          "relbase": 0 }
         self.running = False
         self.inputqueue = Queue()
         self.getinput = input
