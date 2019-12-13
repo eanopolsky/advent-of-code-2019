@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import cmath
+from math import pi
 
 asteroids = set()
 with open("map.txt","r") as f:
@@ -51,22 +52,22 @@ remainingtargets = list(asteroids)
 vaporizedtargets = []
 laserangle = cmath.polar(complex(0,-1))[1] #phi=3pi/2
 while len(vaporizedtargets) < 200:
+    print("laserangle is: {}".format(laserangle))
+    print("targets remaining: {}".format(len(remainingtargets)))
     possibletargets = list(filter(lambda t: cmath.polar(t-station)[1] == laserangle, remainingtargets))
-    if len(possibletargets) == 0: #miss. advance the laser.
-        higherangletargets = list(filter(lambda t: cmath.polar(t-station)[1] > laserangle,remainingtargets))
-        if len(higherangletargets) == 0:
-            laserangle=0
-            continue
-        else:
-            higherangletargets.sort(key=lambda t:cmath.polar(t-station)[1])
-            laserangle = cmath.polar(higherangletargets[0])[1]
-            continue
-    else: #hit. vaporize the closest one
+    if len(possibletargets) != 0: #hit. vaporize something
         possibletargets.sort(key=lambda t:cmath.polar(t-station)[0])
         unluckyasteroid = possibletargets[0]
         vaporizedtargets.append(unluckyasteroid)
         remainingtargets.remove(unluckyasteroid)
         print("zapped {}, total: {}".format(unluckyasteroid,len(vaporizedtargets)))
-        continue
-
+    #advance the laser regardless of hit or miss
+    higherangletargets = list(filter(lambda t: cmath.polar(t-station)[1] > laserangle,remainingtargets))
+    if len(higherangletargets) == 0:
+        laserangle=0
+    else:
+        higherangletargets.sort(key=lambda t:cmath.polar(t-station)[1])
+        lowestnextangle = cmath.polar(higherangletargets[0]-station)[1]
+        laserangle = lowestnextangle
+        
 print(vaporizedtargets[199])
