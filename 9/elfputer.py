@@ -153,6 +153,14 @@ class intcodevm:
         else:
             print("unsupported parameter mode")
             exit(1)
+
+    #fetches from a parameter, taking parameter modes into account
+    def __fetchparam(self,deci,paramnum):
+        pass
+
+    #stores to a parameter, taking parameter modes into account
+    def __storeparam(self,deci,paramnum,value):
+        pass
     
     #executes a decoded instruction
     def __execute(self,deci):
