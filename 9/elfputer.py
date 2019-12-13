@@ -151,11 +151,21 @@ class intcodevm:
         elif deci["parametermodes"][paramnum] == "position":
             return self.memory[deci["parameters"][paramnum]]
         else:
-            print("unsupported parameter mode")
+            print("fetch from unsupported parameter mode")
             exit(1)
 
     #stores to a parameter, taking parameter modes into account
     def __storeparam(self,deci,paramnum,value):
+        if deci["parametermodes"][paramnum] == "immediate":
+            print("invalid operation: cannot store to parameter in immediate mode")
+            exit(1)
+        elif deci["parametermodes"][paramnum] == "position":
+            self.memory[deci["parameters"][paramnum]] = value
+            return
+        else:
+            print("store to unsupported parameter mode")
+            exit(1)
+
         pass
     
     #executes a decoded instruction
@@ -163,15 +173,15 @@ class intcodevm:
         if deci["name"] == "add":
             summand1 = self.__fetchparam(deci,0)
             summand2 = self.__fetchparam(deci,1)
-            self.memory[deci["parameters"][2]] = summand1 + summand2
+            self.__storeparam(deci,2,summand1 + summand2)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "multiply":
             multiplicand1 = self.__fetchparam(deci,0)
             multiplicand2 = self.__fetchparam(deci,1)
-            self.memory[deci["parameters"][2]] = multiplicand1 * multiplicand2
+            self.__storeparam(deci,2,multiplicand1 * multiplicand2)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "input":
-            self.memory[deci["parameters"][0]] = int(self.getinput())
+            self.__storeparam(deci,0,int(self.getinput()))
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "output":
             self.output(self.__fetchparam(deci,0))
@@ -190,15 +200,15 @@ class intcodevm:
                 self.registers["ip"] += deci["size"]
         elif deci["name"] == "less than":
             if self.__fetchparam(deci,0) < self.__fetchparam(deci,1):
-                self.memory[deci["parameters"][2]] = 1
+                self.__storeparam(deci,2,1)
             else:
-                self.memory[deci["parameters"][2]] = 0
+                self.__storeparam(deci,2,0)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "equals":
             if self.__fetchparam(deci,0) == self.__fetchparam(deci,1):
-                self.memory[deci["parameters"][2]] = 1
+                self.__storeparam(deci,2,1)
             else:
-                self.memory[deci["parameters"][2]] = 0
+                self.__storeparam(deci,2,0)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "adj-relbase":
             self.registers["relbase"] += self.__fetchparam(deci,0)
