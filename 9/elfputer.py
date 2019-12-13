@@ -232,40 +232,5 @@ class intcodevm:
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
-    results = []
-    for permutation in permutations([5,6,7,8,9]):
-        A = intcodevm(memory=memory,name="A")
-        A.setinputmode("queue")
-        A.queueinput(permutation[0])
-        A.queueinput(0)
-        B = intcodevm(memory=memory,name="B")
-        B.setinputmode("queue")
-        B.queueinput(permutation[1])
-        C = intcodevm(memory=memory,name="C")
-        C.setinputmode("queue")
-        C.queueinput(permutation[2])
-        D = intcodevm(memory=memory,name="D")
-        D.setinputmode("queue")
-        D.queueinput(permutation[3])
-        E = intcodevm(memory=memory,name="E")
-        E.setinputmode("queue")
-        E.queueinput(permutation[4])
-        A.setoutputfunc(B.queueinput)
-        B.setoutputfunc(C.queueinput)
-        C.setoutputfunc(D.queueinput)
-        D.setoutputfunc(E.queueinput)
-        E.setoutputfunc(A.queueinput)
-        Athread = threading.Thread(group=None,target=A.run)
-        Bthread = threading.Thread(group=None,target=B.run)
-        Cthread = threading.Thread(group=None,target=C.run)
-        Dthread = threading.Thread(group=None,target=D.run)
-        Ethread = threading.Thread(group=None,target=E.run)
-        threads = [Athread, Bthread, Cthread, Dthread, Ethread]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-        #print(permutation)
-        results.append({"permutation":permutation,"thrustvalue":A.getinput()})
-    results.sort(key=lambda x:x["thrustvalue"],reverse=True)
-    print(results[0])
+    myvm = intcodevm(memory=memory,name="test")
+    myvm.run()
