@@ -1,5 +1,12 @@
 #!/usr/bin/python3
 
+#To implement for day 9:
+# * parameters in relative mode
+# * relative base register
+# * opcode 9: adjust relative base
+# * support for large (possibly sparse) memory.
+# * verify/add large number support (at least 16 decimal digits)
+
 from queue import Queue
 from itertools import permutations
 import threading
@@ -22,7 +29,6 @@ class iomanager:
         # each output queue.
         # 
         iodistributors = []
-        
 
 class intcodevm:
     #instructions
