@@ -5,7 +5,6 @@
 # * relative base register
 # * opcode 9: adjust relative base
 # * support for large (possibly sparse) memory.
-# * verify/add large number support (at least 16 decimal digits)
 
 from queue import Queue
 from itertools import permutations
