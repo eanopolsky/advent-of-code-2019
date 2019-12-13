@@ -2,7 +2,6 @@
 
 #To implement for day 9:
 # * parameters in relative mode
-# * opcode 9: adjust relative base
 
 from queue import Queue
 from itertools import permutations
@@ -196,6 +195,9 @@ class intcodevm:
                 self.memory[deci["parameters"][2]] = 1
             else:
                 self.memory[deci["parameters"][2]] = 0
+            self.registers["ip"] += deci["size"]
+        elif deci["name"] == "adj-relbase":
+            self.registers["relbase"] += self.__dereference(deci,0)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "halt":
             self.running = False
