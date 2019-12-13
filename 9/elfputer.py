@@ -4,7 +4,6 @@
 # * parameters in relative mode
 # * relative base register
 # * opcode 9: adjust relative base
-# * support for large (possibly sparse) memory.
 
 from queue import Queue
 from itertools import permutations
@@ -29,6 +28,35 @@ class iomanager:
         # 
         iodistributors = []
 
+class memorymanager:
+    def __init__(self,initcontents):
+        self.memdict = {}
+        self.load(initcontents)
+    def load(self,newmem):
+        if type(newmem) != type(list()):
+            print("memorymanager may only be initialized with a list")
+            exit(1)
+        for i in range(len(newmem)):
+            self.memdict[i] = newmem[i]
+    def __readsingle(self,i):
+        try:
+            return self.memdict[i]
+        except IndexError:
+            return 0
+    def __getitem__(self,key):
+        if type(key) == type(int()):
+            return self.__readsingle(key)
+        elif type(key) == type(slice(1)):
+            if key.step != None:
+                print("memory slicing with steps not supported")
+                exit(1)
+            return [self.__readsingle(i) for i in range(key.start,key.stop)]
+        else:
+            print("unsupported memory index type: {}".format(type(index)))
+            exit(1)
+    def __setitem__(self,key,value):
+        self.memdict[key] = value
+
 class intcodevm:
     #instructions
     decodemap = {1: {"name":"add","parameters":3},
@@ -47,7 +75,7 @@ class intcodevm:
 
     def __init__(self, memory, name):
         self.name = name
-        self.memory = memory.copy()
+        self.memory = memorymanager(memory)
         self.registers = {"ip": 0}
         self.running = False
         self.inputqueue = Queue()
