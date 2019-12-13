@@ -144,8 +144,8 @@ class intcodevm:
             print("Decoded {} to {}".format(self.memory[ip:ip+instruction["size"]],instruction))
         return instruction
 
-    #dereferences a positional parameter if needed
-    def __dereference(self,deci,paramnum):
+    #fetches from a parameter, taking parameter modes into account
+    def __fetchparam(self,deci,paramnum):
         if deci["parametermodes"][paramnum] == "immediate":
             return deci["parameters"][paramnum]
         elif deci["parametermodes"][paramnum] == "position":
@@ -154,10 +154,6 @@ class intcodevm:
             print("unsupported parameter mode")
             exit(1)
 
-    #fetches from a parameter, taking parameter modes into account
-    def __fetchparam(self,deci,paramnum):
-        pass
-
     #stores to a parameter, taking parameter modes into account
     def __storeparam(self,deci,paramnum,value):
         pass
@@ -165,47 +161,47 @@ class intcodevm:
     #executes a decoded instruction
     def __execute(self,deci):
         if deci["name"] == "add":
-            summand1 = self.__dereference(deci,0)
-            summand2 = self.__dereference(deci,1)
+            summand1 = self.__fetchparam(deci,0)
+            summand2 = self.__fetchparam(deci,1)
             self.memory[deci["parameters"][2]] = summand1 + summand2
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "multiply":
-            multiplicand1 = self.__dereference(deci,0)
-            multiplicand2 = self.__dereference(deci,1)
+            multiplicand1 = self.__fetchparam(deci,0)
+            multiplicand2 = self.__fetchparam(deci,1)
             self.memory[deci["parameters"][2]] = multiplicand1 * multiplicand2
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "input":
             self.memory[deci["parameters"][0]] = int(self.getinput())
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "output":
-            self.output(self.__dereference(deci,0))
+            self.output(self.__fetchparam(deci,0))
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "jump-if-true":
-            testvalue = self.__dereference(deci,0)
+            testvalue = self.__fetchparam(deci,0)
             if testvalue != 0:
-                self.registers["ip"] = self.__dereference(deci,1)
+                self.registers["ip"] = self.__fetchparam(deci,1)
             else:
                 self.registers["ip"] += deci["size"]
         elif deci["name"] == "jump-if-false":
-            testvalue = self.__dereference(deci,0)
+            testvalue = self.__fetchparam(deci,0)
             if testvalue == 0:
-                self.registers["ip"] = self.__dereference(deci,1)
+                self.registers["ip"] = self.__fetchparam(deci,1)
             else:
                 self.registers["ip"] += deci["size"]
         elif deci["name"] == "less than":
-            if self.__dereference(deci,0) < self.__dereference(deci,1):
+            if self.__fetchparam(deci,0) < self.__fetchparam(deci,1):
                 self.memory[deci["parameters"][2]] = 1
             else:
                 self.memory[deci["parameters"][2]] = 0
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "equals":
-            if self.__dereference(deci,0) == self.__dereference(deci,1):
+            if self.__fetchparam(deci,0) == self.__fetchparam(deci,1):
                 self.memory[deci["parameters"][2]] = 1
             else:
                 self.memory[deci["parameters"][2]] = 0
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "adj-relbase":
-            self.registers["relbase"] += self.__dereference(deci,0)
+            self.registers["relbase"] += self.__fetchparam(deci,0)
             self.registers["ip"] += deci["size"]
         elif deci["name"] == "halt":
             self.running = False
