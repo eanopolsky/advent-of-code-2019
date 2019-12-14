@@ -18,5 +18,15 @@ with open("input.txt") as f:
         #print(reaction)
 
 knownchems = [reaction["P"]["chem"] for reaction in reactions]
-knownchems.append("ORE")
-print(knownchems)
+#print(knownchems)
+
+oreused = 0
+desiredchems = {}
+for knownchem in knownchems:
+    desiredchems[knownchem] = 0 if knownchem != "FUEL" else 1
+#print(desiredchems)
+storedchems = {}
+for knownchem in knownchems:
+    storedchems[knownchem] = 0
+#print(storedchems)
+
