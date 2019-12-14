@@ -35,16 +35,23 @@ def showmoons():
 
 def getenergy(moon):
     axes = ["x","y","z"]
-    posenergy = sum([moon["pos"][axis] for axis in axes])
-    velenergy = sum([moon["vel"][axis] for axis in axes])
-    return posenergy * velenergy
-    
+    posenergy = sum([abs(moon["pos"][axis]) for axis in axes])
+    velenergy = sum([abs(moon["vel"][axis]) for axis in axes])
+    totenergy = posenergy * velenergy
+    #print(posenergy)
+    #print(velenergy)
+    #print(totenergy)
+    #print("")
+    return totenergy
+
+showmoons()
 for step in range(1000):
     for i in range(len(moons)-1): #index of first moon
         for j in range(i+1,len(moons)):
             applygravity(moons[i],moons[j])
     for moon in moons:
         applyvelocity(moon)
+#    showmoons()
 
 print(sum([getenergy(moon) for moon in moons]))
     
