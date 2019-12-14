@@ -260,7 +260,17 @@ class screen:
         else:
             print("error receiving tile from vm")
     def render(self):
-        print(len(self.__tilesonscreen))
+        minx = min([tile["x"] for tile in self.__tilesonscreen])
+        maxx = max([tile["x"] for tile in self.__tilesonscreen])
+        miny = min([tile["y"] for tile in self.__tilesonscreen])
+        maxy = max([tile["y"] for tile in self.__tilesonscreen])
+        for y in range(miny,maxy+1):
+            for x in range(minx,maxx+1):
+                tile = list(filter(lambda tile: tile["x"] == x and tile["y"] == y,self.__tilesonscreen))[0]
+                print(tile["tiletype"]["render"],end="")
+            print("")
+    def countblocks(self):
+        return len(list(filter(lambda tile: tile["tiletype"]["name"] == "block",self.__tilesonscreen)))
             
 if __name__ == "__main__":
     with open('program.txt') as f:
@@ -269,5 +279,5 @@ if __name__ == "__main__":
     myscreen = screen()
     myvm.setoutputfunc(myscreen.receivefromvm)
     myvm.run()
-    myscreen.render()
+    print(myscreen.countblocks())
     
