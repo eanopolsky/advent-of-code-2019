@@ -84,7 +84,7 @@ class intcodevm:
         self.outputqueue = Queue()
         self.output = print
         self.disassemble = False
-        self.disassembled = []
+        self.disassembled = {}
 
     def setdisassemble(self,newval):
         self.disassemble = newval
@@ -186,8 +186,7 @@ class intcodevm:
     #executes a decoded instruction
     def __execute(self,deci):
         if self.disassemble:
-            instruction = {"deci": deci, "ip": self.registers["ip"]}
-            self.disassembled.append(instruction)
+            self.disassembled[self.registers["ip"]] = deci
         if deci["name"] == "add":
             summand1 = self.__fetchparam(deci,0)
             summand2 = self.__fetchparam(deci,1)
