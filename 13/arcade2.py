@@ -312,6 +312,12 @@ class screen:
             if tile["tiletype"]["name"] == "hpaddle":
                 return tile["x"]
 
+def autojoystick():
+    if myscreen.getballx() == myscreen.getpaddlex():
+        return 0
+    else:
+        return -1 if myscreen.getballx() < myscreen.getpaddlex() else 1
+
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
@@ -320,5 +326,6 @@ if __name__ == "__main__":
     myvm = intcodevm(memory=memory,name="elfout")
     myscreen = screen()
     myvm.setoutputfunc(myscreen.receivefromvm)
+    myvm.setinputfunc(autojoystick)
     vmthread = threading.Thread(group=None, target=myvm.run)
     vmthread.start()
