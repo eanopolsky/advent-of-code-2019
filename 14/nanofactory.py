@@ -14,5 +14,9 @@ with open("input.txt") as f:
             reagentdict = {}
             reagentdict["num"], reagentdict["chem"] = reagent.split(" ")
             reaction["Rs"].append(reagentdict)
-        print(reaction)
-        
+        reactions.append(reaction)
+        #print(reaction)
+
+knownchems = [reaction["P"]["chem"] for reaction in reactions]
+knownchems.append("ORE")
+print(knownchems)
