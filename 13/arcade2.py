@@ -253,9 +253,11 @@ class screen:
             self.__currenttile["y"] = i
             self.__nextinput = "tile"
         elif self.__nextinput == "tile":
-            print("received tile at x={},y={}".format(self.__currenttile["x"], self.__currenttile["y"]))
+            #print("received tile at x={},y={}".format(self.__currenttile["x"], self.__currenttile["y"]))
             self.__currenttile["tiletype"] = self.tiletypes[i]
             self.__tilesonscreen.append(self.__currenttile)
+            if self.__currenttile["x"] == 43 and self.__currenttile["y"] == 19:
+                self.render()
             self.__currenttile = self.emptytile.copy()
             self.__nextinput = "x"
         else:
@@ -283,6 +285,5 @@ if __name__ == "__main__":
     myscreen = screen()
     myvm.setoutputfunc(myscreen.receivefromvm)
     myvm.run()
-    myscreen.render()
     #print(myscreen.countblocks())
     
