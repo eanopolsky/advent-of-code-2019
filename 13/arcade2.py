@@ -314,8 +314,8 @@ class screen:
                 return tile["x"]
 
 def autojoystick():
-    myscreen.render()
-    sleep(1)
+    #myscreen.render()
+    #sleep(1)
     if myscreen.getballx() == myscreen.getpaddlex():
         return 0
     else:
@@ -332,3 +332,5 @@ if __name__ == "__main__":
     myvm.setinputfunc(autojoystick)
     vmthread = threading.Thread(group=None, target=myvm.run)
     vmthread.start()
+    vmthread.join()
+    myscreen.render()
