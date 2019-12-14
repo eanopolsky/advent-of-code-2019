@@ -187,11 +187,18 @@ class intcodevm:
     def __execute(self,deci):
         if self.disassemble:
             try:
-                if self.disassembled[self.registers["ip"]] != deci:
+                #if self.disassembled[self.registers["ip"]] != deci:
+                    #^^Seems to trigger due to code modifying instruction
+                    #parameters. Maybe disassembly would work better if
+                    #only the instruction name and parameter modes were
+                    #considered, treating the parameters like local
+                    #variables.
+                if self.disassembled[self.registers["ip"]]["name"] != deci["name"] or self.disassembled[self.registers["ip"]]["parametermodes"] != deci["parametermodes"]:
                     print("disassembler identified self-modifying code")
                     print(self.disassembled[self.registers["ip"]])
                     print(deci)
                     exit(1)
+
             except KeyError:
                 pass
             self.disassembled[self.registers["ip"]] = deci
