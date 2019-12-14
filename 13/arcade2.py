@@ -244,6 +244,20 @@ class screen:
         self.__tilesonscreen = []
         self.__currenttile = self.emptytile.copy()
         self.__nextinput = "x"
+        self.__segmentdisplay = 0
+
+    def __addtile(self,newtile):
+        self.__tilesonscreen = [ tile for tile in self.__tilesonscreen if
+                                 not (tile["x"] == newtile["x"] and
+                                      tile["y"] == newtile["y"]) ]
+        # replacedtile = [tile for tile in self.__tilesonscreen if
+        #                 tile["x"] == newtile["x"] and
+        #                 tile["y"] == newtile["y"]]
+        # if len(replacedtile) > 1:
+        #     print("screen error")
+        #     exit(1)
+        # self.__tilesonscreen.remove(replacedtile)
+        self.__tilesonscreen.append(newtile)
 
     def receivefromvm(self,i):
         if self.__nextinput == "x":
@@ -254,24 +268,36 @@ class screen:
             self.__nextinput = "tile"
         elif self.__nextinput == "tile":
             #print("received tile at x={},y={}".format(self.__currenttile["x"], self.__currenttile["y"]))
-            self.__currenttile["tiletype"] = self.tiletypes[i]
-            self.__tilesonscreen.append(self.__currenttile)
-            if self.__currenttile["x"] == 43 and self.__currenttile["y"] == 19:
+            if self.__currenttile["x"] == -1 and self.__currenttile["y"] == 0:
+                self.__segmentdisplay = i
+                self.render()
+            else:
+                self.__currenttile["tiletype"] = self.tiletypes[i]
+                #self.__tilesonscreen.append(self.__currenttile)
+                self.__addtile(self.__currenttile)
                 self.render()
             self.__currenttile = self.emptytile.copy()
             self.__nextinput = "x"
         else:
             print("error receiving tile from vm")
+            exit(1)
 
     def render(self):
         minx = min([tile["x"] for tile in self.__tilesonscreen])
         maxx = max([tile["x"] for tile in self.__tilesonscreen])
         miny = min([tile["y"] for tile in self.__tilesonscreen])
         maxy = max([tile["y"] for tile in self.__tilesonscreen])
+        if len(self.__tilesonscreen) < 20*44:
+            print("incomplete screen")
+            return
         for y in range(miny,maxy+1):
             for x in range(minx,maxx+1):
-                tile = list(filter(lambda tile: tile["x"] == x and tile["y"] == y,self.__tilesonscreen))[0]
-                print(tile["tiletype"]["render"],end="")
+                try:
+                    tile = list(filter(lambda tile: tile["x"] == x and tile["y"] == y,self.__tilesonscreen))[0]
+                    tilechar = tile["tiletype"]["render"]
+                except IndexError:
+                    tilechar = " "
+                print(tilechar,end="")
             print("")
     def countblocks(self):
         return len(list(filter(lambda tile: tile["tiletype"]["name"] == "block",self.__tilesonscreen)))
@@ -280,10 +306,9 @@ if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
     #insert quarters:
-    #memory[0] = 2
+    memory[0] = 2
     myvm = intcodevm(memory=memory,name="elfout")
     myscreen = screen()
     myvm.setoutputfunc(myscreen.receivefromvm)
-    myvm.run()
-    #print(myscreen.countblocks())
-    
+    vmthread = threading.Thread(group=None, target=myvm.run)
+    vmthread.start()
