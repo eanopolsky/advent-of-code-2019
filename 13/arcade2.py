@@ -2,6 +2,7 @@
 
 #TODO: implement iomanager and hypervisor
 
+from time import sleep
 from queue import Queue
 from itertools import permutations
 import threading
@@ -314,6 +315,7 @@ class screen:
 
 def autojoystick():
     myscreen.render()
+    sleep(1)
     if myscreen.getballx() == myscreen.getpaddlex():
         return 0
     else:
