@@ -186,6 +186,14 @@ class intcodevm:
     #executes a decoded instruction
     def __execute(self,deci):
         if self.disassemble:
+            try:
+                if self.disassembled[self.registers["ip"]] != deci:
+                    print("disassembler identified self-modifying code")
+                    print(self.disassembled[self.registers["ip"]])
+                    print(deci)
+                    exit(1)
+            except KeyError:
+                pass
             self.disassembled[self.registers["ip"]] = deci
         if deci["name"] == "add":
             summand1 = self.__fetchparam(deci,0)
