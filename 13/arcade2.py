@@ -270,12 +270,12 @@ class screen:
             #print("received tile at x={},y={}".format(self.__currenttile["x"], self.__currenttile["y"]))
             if self.__currenttile["x"] == -1 and self.__currenttile["y"] == 0:
                 self.__segmentdisplay = i
-                self.render()
+                #self.render()
             else:
                 self.__currenttile["tiletype"] = self.tiletypes[i]
                 #self.__tilesonscreen.append(self.__currenttile)
                 self.__addtile(self.__currenttile)
-                self.render()
+                #self.render()
             self.__currenttile = self.emptytile.copy()
             self.__nextinput = "x"
         else:
@@ -313,6 +313,7 @@ class screen:
                 return tile["x"]
 
 def autojoystick():
+    myscreen.render()
     if myscreen.getballx() == myscreen.getpaddlex():
         return 0
     else:
