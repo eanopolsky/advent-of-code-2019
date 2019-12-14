@@ -290,6 +290,7 @@ class screen:
         if len(self.__tilesonscreen) < 20*44:
             print("incomplete screen")
             return
+        print("Score: {}".format(self.__segmentdisplay))
         for y in range(miny,maxy+1):
             for x in range(minx,maxx+1):
                 try:
@@ -301,7 +302,16 @@ class screen:
             print("")
     def countblocks(self):
         return len(list(filter(lambda tile: tile["tiletype"]["name"] == "block",self.__tilesonscreen)))
-            
+
+    def getballx(self):
+        for tile in self.__tilesonscreen:
+            if tile["tiletype"]["name"] == "ball":
+                return tile["x"]
+    def getpaddlex(self):
+        for tile in self.__tilesonscreen:
+            if tile["tiletype"]["name"] == "hpaddle":
+                return tile["x"]
+
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
