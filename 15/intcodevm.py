@@ -273,12 +273,38 @@ class mvcontroller:
             self.__robot["x"] = newx
             self.__robot["y"] = newy
         self.render()
-        
+
+import sys, termios, tty, os, time
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+ 
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
     mymvcontroller = mvcontroller(memory)
     #mymvcontroller.render()
     while True:
-        mymvcontroller.processusercmd(input())
+        ch = getch()
+        if ch =="w":
+            cmd = "n"
+        elif ch == "a":
+            cmd = "w"
+        elif ch == "s":
+            cmd = "s"
+        elif ch == "d":
+            cmd = "e"
+        elif ch == "q":
+            exit(0)
+        else:
+            print('invalid character')
+            continue
+        mymvcontroller.processusercmd(cmd)
 
