@@ -272,7 +272,32 @@ class mvcontroller:
         if status["moveok"] == True:
             self.__robot["x"] = newx
             self.__robot["y"] = newy
-        self.render()
+        #self.render()
+        return status["moveok"]
+    def exploremap(self):
+        moveok = True
+        while moveok == True:
+            moveok = self.processusercmd("n")
+        hugwall = "n"
+        dirs = {"n": {"left": "w", "right": "e"},
+                "w": {"left": "s", "right": "n"},
+                "s": {"left": "e", "right": "w"},
+                "e": {"left": "n", "right": "s"}}
+        while not (self.__robot["x"] == 0 and self.__robot["y"] == 0 and len(self.__areamap) > 50):
+            moveok = self.processusercmd(dirs[hugwall]["left"])
+            if not moveok:
+                hugwall = dirs[hugwall]["left"]
+                continue
+            else:
+                moveok = self.processusercmd(hugwall)
+                if not moveok:
+                    continue
+                else:
+                    hugwall = dirs[hugwall]["right"]
+                    continue
+                
+
+            
 
 import sys, termios, tty, os, time
 def getch():
@@ -303,8 +328,13 @@ if __name__ == "__main__":
             cmd = "e"
         elif ch == "q":
             exit(0)
+        elif ch == "e":
+            mymvcontroller.exploremap()
+            mymvcontroller.render()
+            continue
         else:
             print('invalid character')
             continue
         mymvcontroller.processusercmd(cmd)
+        mymvcontroller.render()
 
