@@ -295,10 +295,10 @@ class mvcontroller:
                 else:
                     hugwall = dirs[hugwall]["right"]
                     continue
-                
+    def getareamap(self):
+        return self.__areamap
 
-            
-
+    
 import sys, termios, tty, os, time
 def getch():
     fd = sys.stdin.fileno()
@@ -315,26 +315,60 @@ if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
     mymvcontroller = mvcontroller(memory)
-    #mymvcontroller.render()
-    while True:
-        ch = getch()
-        if ch =="w":
-            cmd = "n"
-        elif ch == "a":
-            cmd = "w"
-        elif ch == "s":
-            cmd = "s"
-        elif ch == "d":
-            cmd = "e"
-        elif ch == "q":
-            exit(0)
-        elif ch == "e":
-            mymvcontroller.exploremap()
-            mymvcontroller.render()
-            continue
+    mymvcontroller.exploremap()
+    mymvcontroller.render()
+    areamap = mymvcontroller.getareamap()
+    for maptile in areamap:
+        if maptile["x"] == 0 and maptile["y"] == 0:
+            maptile["minmoves"] = 0
+            maptile["explored"] = True
         else:
-            print('invalid character')
-            continue
-        mymvcontroller.processusercmd(cmd)
-        mymvcontroller.render()
+            maptile["explored"] = False
+    unexploredspace = [maptile for maptile in areamap
+                       if maptile["explored"] == False and
+                       maptile["content"] != "#"]
+    while len(unexploredspace) > 0:
+        print("unexplored space: {}".format(len(unexploredspace)))
+        for maptile in unexploredspace:
+            x = maptile["x"]
+            y = maptile["y"]
+            neighbors = [n for n in areamap
+                         if (n["x"] == x and (n["y"] == y+1 or n["y"] == y-1)) or
+                         (n["y"] == y and (n["x"] == x+1 or n["x"] == x-1))]
+            exploredneighbors = [n for n in neighbors if n["explored"] == True]
+            if len(exploredneighbors) == 0:
+                continue
+            else:
+                minmoves = min([n["minmoves"] for n in exploredneighbors]) + 1
+                maptile["minmoves"] = minmoves
+                maptile["explored"] = True
+        unexploredspace = [maptile for maptile in areamap
+                           if maptile["explored"] == False and
+                           maptile["content"] != "#"]
+    for maptile in areamap:
+        if maptile["content"] == "O":
+            print("minimum moves to oxygen system: {}".format(maptile["minmoves"]))
+    
+    
+    # while True:
+    #     ch = getch()
+    #     if ch =="w":
+    #         cmd = "n"
+    #     elif ch == "a":
+    #         cmd = "w"
+    #     elif ch == "s":
+    #         cmd = "s"
+    #     elif ch == "d":
+    #         cmd = "e"
+    #     elif ch == "q":
+    #         exit(0)
+    #     elif ch == "e":
+    #         mymvcontroller.exploremap()
+    #         mymvcontroller.render()
+    #         continue
+    #     else:
+    #         print('invalid character')
+    #         continue
+    #     mymvcontroller.processusercmd(cmd)
+    #     mymvcontroller.render()
 
