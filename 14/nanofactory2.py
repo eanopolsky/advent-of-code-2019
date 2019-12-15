@@ -24,54 +24,56 @@ with open("input.txt") as f:
 knownchems = [reaction["P"]["chem"] for reaction in reactions]
 #print(knownchems)
 
-needed = {}
-for knownchem in knownchems:
-    needed[knownchem] = 0 if knownchem != "FUEL" else 1
-needed["ORE"] = 0
-#print(needed)
-storage = {}
-for knownchem in knownchems:
-    storage[knownchem] = 0
-#print(storage)
-
-
-def hashablestorage(storage):
-    return tuple(sorted([key+str(storage[key]) for key in storage]))
-
-storagestates = set()
-storagestates.add(hashablestorage(storage))
-fuelsynthesized = 0
-while True:
-    for target in needed:
-        if target == "ORE":
-            continue
-        if needed[target] == 0:
-            continue
-        if needed[target] <= storage[target]:
-            storage[target] -= needed[target]
-            needed[target] = 0
-            continue
-        else:
-            needed[target] -= storage[target]
-            storage[target] = 0
-        reaction = [reaction for reaction in reactions if reaction["P"]["chem"] == target][0] #only works when each chem is produced by a single recipe. Might change in part 2?
-        #print(reaction)
-        nreactions = ceil(needed[target] / reaction["P"]["num"])
-        for reagent in reaction["Rs"]:
-            needed[reagent["chem"]] += nreactions * reagent["num"]
-        excessproduct = nreactions * reaction["P"]["num"] - needed[target]
-        storage[target] += excessproduct
-        needed[target] = 0
-    #print(storage)
+def findoreneeded(fuelamount):
+    needed = {}
+    for knownchem in knownchems:
+        needed[knownchem] = 0 if knownchem != "FUEL" else fuelamount
+    needed["ORE"] = 0
     #print(needed)
-    if sum([needed[chem] for chem in needed if chem != "ORE"]) == 0:
-        fuelsynthesized += 1
-        if hashablestorage(storage) in storagestates:
-            #finite state loop found
-            break
-        else:
-            storagestates.add(hashablestorage(storage))
-            needed["FUEL"] += 1
+    storage = {}
+    for knownchem in knownchems:
+        storage[knownchem] = 0
+    #print(storage)
 
-print(fuelsynthesized)
-print(needed["ORE"])
+    while True:
+        for target in needed:
+            if target == "ORE":
+                continue
+            if needed[target] == 0:
+                continue
+            if needed[target] <= storage[target]:
+                storage[target] -= needed[target]
+                needed[target] = 0
+                continue
+            else:
+                needed[target] -= storage[target]
+                storage[target] = 0
+            reaction = [reaction for reaction in reactions if reaction["P"]["chem"] == target][0] #only works when each chem is produced by a single recipe. Might change in part 2?
+            #print(reaction)
+            nreactions = ceil(needed[target] / reaction["P"]["num"])
+            for reagent in reaction["Rs"]:
+                needed[reagent["chem"]] += nreactions * reagent["num"]
+            excessproduct = nreactions * reaction["P"]["num"] - needed[target]
+            storage[target] += excessproduct
+            needed[target] = 0
+        #print(storage)
+        #print(needed)
+        if sum([needed[chem] for chem in needed if chem != "ORE"]) == 0:
+            return needed["ORE"]
+
+#print(findoreneeded(1))
+low = 1
+targetore = 1000 ** 4
+high = targetore
+guess = ceil((low+high)/2)
+while True:
+    print("fuelguess: {}, ore needed:{}".format(guess,findoreneeded(guess)))
+    if findoreneeded(guess) <= targetore and \
+       findoreneeded(guess+1) > targetore:
+        print("max fuel from {} ore: {}".format(targetore,guess))
+        exit(0)
+    if findoreneeded(guess) < targetore:
+        low = guess
+    else:
+        high = guess
+    guess = ceil((low+high)/2)
