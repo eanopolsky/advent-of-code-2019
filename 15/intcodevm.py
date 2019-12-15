@@ -4,6 +4,7 @@ from time import sleep
 from queue import Queue
 from itertools import permutations
 import threading
+import colorama
 
 debug = False
 
@@ -204,7 +205,80 @@ class intcodevm:
             deci = self.__decode(self.registers["ip"])
             self.__execute(deci)
 
+class mvcontroller:
+    mvcmds = [{"raw":1,"name":"north","shortcut":"n","dx":0,"dy":1},
+             {"raw":2,"name":"south","shortcut":"s","dx":0,"dy":-1},
+             {"raw":3,"name":"west","shortcut":"w","dx":-1,"dy":0},
+             {"raw":4,"name":"east","shortcut":"e","dx":1,"dy":0}]
+    scodes = [{"raw":0,"name":"wallhit","moveok":False},
+              {"raw":1,"name":"floor","moveok":True},
+              {"raw":2,"name":"oxygen","moveok":True}]
+    def __init__(self,robotmemory):
+        self.__myvm = intcodevm(memory=robotmemory,name="repairdroid")
+        self.__myvm.setinputmode("queue") #.queueinput(val)
+        self.__myvm.setoutputmode("queue") #.getoutput()
+        self.__myvmthread = threading.Thread(group=None,target=self.__myvm.run)
+        self.__myvmthread.start()
+        self.__robot = {"x": 0, "y": 0}
+        self.__areamap = [{"x":0,"y":0,"content":"."}]
+
+    def __addtile(self, newtile):
+        self.__areamap = [maptile for maptile in self.__areamap if
+                          not (maptile["x"] == newtile["x"] and
+                               maptile["y"] == newtile["y"])]
+        self.__areamap.append(newtile)
+
+    def render(self):
+        minx = min([tile["x"] for tile in self.__areamap])
+        maxx = max([tile["x"] for tile in self.__areamap])
+        miny = min([tile["y"] for tile in self.__areamap])
+        maxy = max([tile["y"] for tile in self.__areamap])
+        for y in range(maxy,miny-1,-1):
+            for x in range(minx,maxx+1):
+                try:
+                    tile = list(filter(lambda tile: tile["x"] == x and tile["y"] == y,self.__areamap))[0]
+                    tilechar = tile["content"]
+                except IndexError:
+                    tilechar = " "
+                #color
+                if x == self.__robot["x"] and y == self.__robot["y"]:
+                    print(colorama.Back.GREEN+tilechar+colorama.Style.RESET_ALL,end="")
+                else:
+                    print(tilechar,end="")
+            print("")
+
+    def processusercmd(self,cmd):
+        try:
+            mvcmd = [mvcmd for mvcmd in self.mvcmds if mvcmd["shortcut"] == cmd][0]
+        except IndexError:
+            print("invalid command shortcut")
+            return
+        self.__myvm.queueinput(mvcmd["raw"])
+        rawstatus = self.__myvm.getoutput()
+        status = [scode for scode in self.scodes if scode["raw"] == rawstatus][0]
+        newx = self.__robot["x"] + mvcmd["dx"]
+        newy = self.__robot["y"] + mvcmd["dy"]
+        newmaptile = {"x": newx, "y": newy, "content": ""}
+        if status["name"] == "wallhit":
+            newmaptile["content"] = "#"
+        elif status["name"] == "floor":
+            newmaptile["content"] = "."
+        elif status["name"] == "oxygen":
+            newmaptile["content"] = "O"
+        else:
+            print("unsupported tile")
+            exit(1)
+        self.__addtile(newmaptile)
+        if status["moveok"] == True:
+            self.__robot["x"] = newx
+            self.__robot["y"] = newy
+        self.render()
+        
 if __name__ == "__main__":
     with open('program.txt') as f:
         memory = [int(x) for x in f.readline().split(",")]
-    myvm = intcodevm(memory=memory,name="repairdroid")
+    mymvcontroller = mvcontroller(memory)
+    #mymvcontroller.render()
+    while True:
+        mymvcontroller.processusercmd(input())
+
