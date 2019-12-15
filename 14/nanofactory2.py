@@ -34,6 +34,13 @@ for knownchem in knownchems:
     storage[knownchem] = 0
 #print(storage)
 
+
+def hashablestorage(storage):
+    return tuple(sorted([key+str(storage[key]) for key in storage]))
+
+storagestates = set()
+storagestates.add(hashablestorage(storage))
+fuelsynthesized = 0
 while True:
     for target in needed:
         if target == "ORE":
@@ -58,6 +65,13 @@ while True:
     #print(storage)
     #print(needed)
     if sum([needed[chem] for chem in needed if chem != "ORE"]) == 0:
-        break
+        fuelsynthesized += 1
+        if hashablestorage(storage) in storagestates:
+            #finite state loop found
+            break
+        else:
+            storagestates.add(hashablestorage(storage))
+            needed["FUEL"] += 1
 
+print(fuelsynthesized)
 print(needed["ORE"])
