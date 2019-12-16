@@ -5,6 +5,7 @@ with open("myinput.txt","r") as f:
 
 #print(signal) #works
 
+#rangelensignal = range(len(signal)) # this actually makes it run slower
 for phase in range(100):
     #print("phase {}".format(phase+1))
     #print("input signal: {}".format(signal))
