@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open("myinput.txt","r") as f:
+with open("testsignal2.txt","r") as f:
     signal = [int(char) for char in f.readline().rstrip()]
 
 #print(signal) #works
@@ -8,13 +8,21 @@ with open("myinput.txt","r") as f:
 basepattern = [0,1,0,-1]
 
 def getpatternforelement(bp,elementnum,signallength):
-    singlepattern = []
-    for val in bp:
-        singlepattern.extend([val for i in range(elementnum)])
-    newpattern = singlepattern[1:]
-    while len(newpattern) < signallength:
-        newpattern.extend(singlepattern)
-    return newpattern[0:signallength]
+    print("creating pattern for element {}".format(elementnum))
+    # singlepattern = []
+    # for val in bp:
+    #     singlepattern.extend([val for i in range(elementnum)])
+    # newpattern = singlepattern[1:]
+    # while len(newpattern) < signallength:
+    #     newpattern.extend(singlepattern)
+    # return newpattern[0:signallength]
+    pattern = []
+    for i in range(signallength):
+        bpindex = ((i+1)//elementnum) % 4
+        pattern.append(bp[bpindex])
+        #print("bpindex: {}, bp[bpindex]: {}".format(bpindex,bp[bpindex]))
+    #input()
+    return pattern
 
 #print(getpatternforelement(basepattern,3,8)) #works
 for phase in range(100):
