@@ -1,41 +1,27 @@
 #!/usr/bin/python3
 
-with open("testsignal2.txt","r") as f:
+with open("myinput.txt","r") as f:
     signal = [int(char) for char in f.readline().rstrip()]
 
 #print(signal) #works
 
-basepattern = [0,1,0,-1]
-
-def getpatternforelement(bp,elementnum,signallength):
-    pattern = []
-    for i in range(signallength):
-        bpindex = ((i+1)//elementnum) % 4
-        if bpindex == 1:
-            pattern.append(1)
-        elif bpindex == 3:
-            pattern.append(-1)
-        else:
-            pattern.append(0)
-        #print("bpindex: {}, bp[bpindex]: {}".format(bpindex,bp[bpindex]))
-    #input()
-    return pattern
-
-#print(getpatternforelement(basepattern,3,8)) #works
 for phase in range(100):
     #print("phase {}".format(phase+1))
     #print("input signal: {}".format(signal))
     nextsignal = []
     for i in range(len(signal)):
+        # i   is the index in the signal array in this program
+        # i+1 is the "position in the output list" in the language of
+        #     the problem
         #print("i {}".format(i))
-        pattern = getpatternforelement(basepattern,i+1,len(signal))
-        #print("pattern: {}".format(pattern))
-        sum = 0
-        for j in range(len(signal)):
-            #print("j {}".format(j))
-            sum += signal[j]*pattern[j]
-        sum = abs(sum) % 10
-        nextsignal.append(sum)
+        positiveelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 1]
+        negativeelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 3]
+        #print("positiveelements: {}".format(positiveelements))
+        #print("negativeelements: {}".format(negativeelements))
+        esum = sum(positiveelements) - sum(negativeelements)
+        esum = abs(esum) % 10
+        #print("esum: {}".format(esum))
+        nextsignal.append(esum)
     signal = nextsignal
     #print("new signal: {}".format(signal))
     #input()
