@@ -8,18 +8,15 @@ with open("testsignal2.txt","r") as f:
 basepattern = [0,1,0,-1]
 
 def getpatternforelement(bp,elementnum,signallength):
-    print("creating pattern for element {}".format(elementnum))
-    # singlepattern = []
-    # for val in bp:
-    #     singlepattern.extend([val for i in range(elementnum)])
-    # newpattern = singlepattern[1:]
-    # while len(newpattern) < signallength:
-    #     newpattern.extend(singlepattern)
-    # return newpattern[0:signallength]
     pattern = []
     for i in range(signallength):
         bpindex = ((i+1)//elementnum) % 4
-        pattern.append(bp[bpindex])
+        if bpindex == 1:
+            pattern.append(1)
+        elif bpindex == 3:
+            pattern.append(-1)
+        else:
+            pattern.append(0)
         #print("bpindex: {}, bp[bpindex]: {}".format(bpindex,bp[bpindex]))
     #input()
     return pattern
