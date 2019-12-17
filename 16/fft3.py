@@ -6,8 +6,8 @@ with open("myinput.txt","r") as f:
 
 #part 2:
 part2 = False
+messageoffset = signal[0:7]
 if part2:
-    messageoffset = signal[0:7]
     realsignal = []
     for i in range(10000):
         realsignal.extend(signal)
@@ -24,20 +24,27 @@ for phase in range(100):
         # i+1 is the "position in the output list" in the language of
         #     the problem
         #
-        # build an nextsignal backwards
-        #if i % 10000 == 0:
-        #print("i: {}".format(i))
+        # build nextsignal backwards
+        #if i % 100000 == 0:
+        #    print("i: {}".format(i))
         if i == 0:
+            #len(signal)-1-i == len(signal)-1 = index to last element
             #last element of the signal never changes
-            nextsignal.append(signal[len(signal)-1]) 
+            nextsignal.append(signal[len(signal)-1-i]) 
         elif i < (len(signal)/2):
+            #len(signal)-1-i is in the 2nd half of the signal
             #no need to account for negative numbers before % 10
             #because all summands are positive
             nextvalue = (nextsignal[i-1] + signal[len(signal)-1-i]) % 10
             nextsignal.append(nextvalue)
+        #elif i < (len(signal
         else:
             i = len(signal)-1-i #try the old logic for now
-            positiveelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 1]
+            #positiveelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 1]
+            positiveelements = []
+            for j in range(len(signal)):
+                if (((j+1)//(i+1)) % 4) == 1:
+                    positiveelements.append(signal[j])
             negativeelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 3]
             esum = sum(positiveelements) - sum(negativeelements)
             esum = abs(esum) % 10
