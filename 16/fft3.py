@@ -42,8 +42,8 @@ for phase in range(100):
             i = len(signal)-1-i #try the old logic for now
             #positiveelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 1]
             positiveelements = []
-            for j in range(len(signal)):
-                if (((j+1)//(i+1)) % 4) == 1:
+            for j in range(len(signal)): #10% of runtime here
+                if (((j+1)//(i+1)) % 4) == 1: #42% of runtime here
                     positiveelements.append(signal[j])
             negativeelements = [signal[j] for j in range(len(signal)) if (((j+1)//(i+1)) % 4) == 3]
             esum = sum(positiveelements) - sum(negativeelements)
