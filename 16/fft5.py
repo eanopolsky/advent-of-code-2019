@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open("myinput.txt","r") as f:
+with open("testsignal3.txt","r") as f:
     signal = [int(char) for char in f.readline().rstrip()]
 #print(signal) #works
 
@@ -17,6 +17,7 @@ if part2:
 
 #rangelensignal = range(len(signal)) # this actually makes it run slower
 for phase in range(100):
+#for phase in range(1):
     print("computing phase {}".format(phase+1))
     #print("input signal: {}".format(signal))
     sum2end = signal.copy()
@@ -31,31 +32,36 @@ for phase in range(100):
         #positive slices have a run length of i
         #negative slices start at 2(i+1)+n(i+1)+i where n in 0,4,8,...
         #negative slices have a run length of i
-        if i % 10000 == 0:
-            print(i)
+        #if i % 10000 == 0:
+        #    print(i)
+        # if i == 0: #doesn't help much
+        #     positivesum = sum(signal[0::4])
+        #     negativesum = sum(signal[2::4])
+        #     nextsignal.append(abs(positivesum - negativesum) % 10)
+        #     continue
         n = 0
         positivesum = 0
         while True:
-            start = n*(i+1)+i
-            if start >= len(signal):
+            start = n*(i+1)+i #7%
+            if start >= len(signal): #7%
                 break
             #positivesum += sum(signal[start:start+i+1])
-            oneafterend = start + i + 1
-            if oneafterend <= (len(sum2end)-1):
-                positivesum += (sum2end[start] - sum2end[oneafterend])
+            oneafterend = start + i + 1 #5%
+            if oneafterend <= (len(sum2end)-1): #7%
+                positivesum += (sum2end[start] - sum2end[oneafterend]) #16%
             else:
                 positivesum += sum2end[start]
             n += 4
         n=0
         negativesum = 0
         while True: 
-            start = 2*(i+1)+n*(i+1)+i
-            if start >= len(signal):
+            start = 2*(i+1)+n*(i+1)+i #11%
+            if start >= len(signal): #5%
                 break
             #negativesum += sum(signal[start:start+i+1])
-            oneafterend = start + i + 1
-            if oneafterend <= (len(sum2end)-1):
-                negativesum += (sum2end[start] - sum2end[start+i+1])
+            oneafterend = start + i + 1 #4%
+            if oneafterend <= (len(sum2end)-1): #6%
+                negativesum += (sum2end[start] - sum2end[start+i+1]) #19%
             else:
                 negativesum += sum2end[start]
             n += 4
