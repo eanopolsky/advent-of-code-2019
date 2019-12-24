@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open("testsignal3.txt","r") as f:
+with open("myinput.txt","r") as f:
     signal = [int(char) for char in f.readline().rstrip()]
 #print(signal) #works
 
