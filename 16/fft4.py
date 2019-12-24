@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
-with open("myinput.txt","r") as f:
+with open("testsignal3.txt","r") as f:
     signal = [int(char) for char in f.readline().rstrip()]
 #print(signal) #works
 
 #part 2:
-part2 = False
-messageoffset = signal[0:7]
+part2 = True
+#messageoffset = signal[0:7]
+messageoffset = signal[0]*1000000+signal[1]*100000+signal[2]*10000+signal[3]*1000+signal[4]*100+signal[5]*10+signal[6]
 if part2:
     realsignal = []
     for i in range(10000):
@@ -37,7 +38,7 @@ for phase in range(100):
         #positive slices have a run length of i
         #negative slices start at 2(i+1)+n(i+1)+i where n in 0,4,8,...
         #negative slices have a run length of i
-        if i % 10 == 0:
+        if i % 10000 == 0:
             print(i)
         n = 0
         positivesum = 0
@@ -64,4 +65,4 @@ for phase in range(100):
     #input()
     signal = nextsignal
 
-print(signal[0:8])
+print(signal[messageoffset:messageoffset+8])
