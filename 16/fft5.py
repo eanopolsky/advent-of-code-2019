@@ -13,7 +13,7 @@ if part2:
     for i in range(10000):
         realsignal.extend(signal)
     signal = realsignal
-
+lensignal = len(signal)
 
 #rangelensignal = range(len(signal)) # this actually makes it run slower
 for phase in range(100):
@@ -43,11 +43,11 @@ for phase in range(100):
         positivesum = 0
         while True:
             start = n*(i+1)+i #7%
-            if start >= len(signal): #7%
+            if start >= lensignal:
                 break
             #positivesum += sum(signal[start:start+i+1])
             oneafterend = start + i + 1 #5%
-            if oneafterend <= (len(sum2end)-1): #7%
+            if oneafterend <= (lensignal-1):
                 positivesum += (sum2end[start] - sum2end[oneafterend]) #16%
             else:
                 positivesum += sum2end[start]
@@ -56,11 +56,11 @@ for phase in range(100):
         negativesum = 0
         while True: 
             start = 2*(i+1)+n*(i+1)+i #11%
-            if start >= len(signal): #5%
+            if start >= lensignal:
                 break
             #negativesum += sum(signal[start:start+i+1])
             oneafterend = start + i + 1 #4%
-            if oneafterend <= (len(sum2end)-1): #6%
+            if oneafterend <= (lensignal-1):
                 negativesum += (sum2end[start] - sum2end[start+i+1]) #19%
             else:
                 negativesum += sum2end[start]
