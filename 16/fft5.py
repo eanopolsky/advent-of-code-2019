@@ -55,7 +55,8 @@ for phase in range(100):
         n=0
         negativesum = 0
         while True: 
-            start = 2*(i+1)+n*(i+1)+i #11%
+            #start = 2*(i+1)+n*(i+1)+i
+            start = (2+n)*(i+1)+i
             if start >= lensignal:
                 break
             #negativesum += sum(signal[start:start+i+1])
