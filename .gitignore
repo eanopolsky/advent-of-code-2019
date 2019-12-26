@@ -2,3 +2,4 @@
 \#*\#
 *.txt
 *.speedscope
+__pycache__
