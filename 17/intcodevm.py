@@ -47,8 +47,11 @@ class asciifb:
             print("wrong type passed to receiveint")
             exit(1)
         if n == 10:
-            self.y += 1
-            self.x = 0
+            if self.x != 0:
+                #kind of cheating. Eliminates blank lines that were
+                #a problem for the renderer.
+                self.y += 1
+                self.x = 0
             return
         self.screenmap[(self.x,self.y)] = chr(n)
         self.x += 1
