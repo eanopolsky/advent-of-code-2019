@@ -30,6 +30,7 @@ def computedistances(themap,startloc,keyring):
     passable.append("@") #start location
     passable.extend([ch for ch in "abcdefghijklmnopqrstuvwxyz"]) #keys
     passable.append(".") #clear tunnels
+    passable.extend([ch.upper() for ch in keyring]) #unlocked doors
     #print(passable) #correct
     themap[startloc]["dist"] = 0
     lastnumdists = 0
