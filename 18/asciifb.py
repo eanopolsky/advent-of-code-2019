@@ -15,6 +15,11 @@ class asciifb:
             self.x = 0
             return
         self.x += 1
+    def receivechar(self, ch):
+        if type(ch) != type("") or len(ch) != 1:
+            print("wrong type passed to receivechar")
+            exit(1)
+        self.receiveint(ord(ch))
     def render(self):
         rx = 0
         ry = 0
