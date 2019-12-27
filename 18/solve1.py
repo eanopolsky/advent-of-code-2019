@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample1.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -75,10 +75,33 @@ def computedistances(themap,startloc,keyring):
         numdists = len([l for l in themap if "dist" in themap[l]])
 
 keyring = []
-computedistances(themap=mymap,startloc=startloc,keyring=keyring) #works
-#cleardistances(mymap)
-destinations = [loc for loc in mymap
-                if "dist" in mymap[loc] #reachable
-                and mymap[loc]["ch"] in keys #consider only keys
-                and mymap[loc]["ch"] not in keyring ]#key we don't have
-print(destinations)
+def getstepstocomplete(themap,startloc,keyring):
+    computedistances(themap=themap,startloc=startloc,keyring=keyring) #works
+    #cleardistances(mymap)
+    destinations = [loc for loc in mymap
+                    if "dist" in mymap[loc] #reachable
+                    and mymap[loc]["ch"] in keys #consider only keys
+                    and mymap[loc]["ch"] not in keyring ]#key we don't have
+    # print(destinations)
+    # for d in destinations:
+    #     print(themap[d]["ch"])
+    if len(destinations) == 0:
+        #no more keys to collect
+        return 0
+    else:
+        destdata = {}
+        for d in destinations:
+            destdata[d] = {"steps2dest": themap[d]["dist"]}
+        for d in destinations:
+            newkeyring = keyring.copy()
+            newkeyring.append(themap[d]["ch"])
+            cleardistances(themap)
+            stepstocomplete = getstepstocomplete(themap,d,newkeyring)
+            destdata[d]["stepsafterdest"] = stepstocomplete
+        for d in destinations:
+            destdata[d]["totalsteps"] = destdata[d]["steps2dest"] + \
+                destdata[d]["stepsafterdest"]
+        steptotals = [destdata[d]["totalsteps"] for d in destdata]
+        return min(steptotals)
+
+print(getstepstocomplete(themap=mymap,startloc=startloc,keyring=keyring))
