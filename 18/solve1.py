@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-#debug = False
-debug = True
-if debug:
-    inputfile = "sample2.txt"
-else:
-    inputfile = "myinput.txt"
+debug = False
+#debug = True
+
+inputfile = "sample2.txt"
+#inputfile = "sample3.txt"
+#inputfile = "myinput.txt"
 
 from asciifb import asciifb
 
@@ -128,6 +128,9 @@ for route in routes:
 # exit(1)
 
 def getstepstocomplete(fromch,keyring):
+    if debug:
+        print("")
+        print("now at {}. Keyring: {}".format(fromch, keyring))
     if len(keyring) == len(keys):
         return 0
     neededkeys = keys - keyring
@@ -135,10 +138,12 @@ def getstepstocomplete(fromch,keyring):
     for neededkey in neededkeys:
         if keysneededtoaccess[neededkey].issubset(keyring):
             destopts.append(neededkey)
-
+    if debug:
+        print("available next steps: {}".format(destopts))
+        input("press enter to continue")
     destoptsteps = []
     for destopt in destopts:
-        newkeyring = keyring.copy() #16%
+        newkeyring = keyring.copy()
         newkeyring.add(destopt)
         stepsafterroute = getstepstocomplete(destopt,newkeyring)
         destoptstep = stepsdir[fromch][destopt] + stepsafterroute
