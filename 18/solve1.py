@@ -3,7 +3,7 @@
 #debug = False
 debug = True
 if debug:
-    inputfile = "sample3.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -95,29 +95,45 @@ for routestartloc in mymap:
         routes.append(route)
     clearroutes(mymap)
 
-#reorganize route data for better performance
-newroutes = {}
-for routestartchar in routestartchars:
-    newroutes[routestartchar] = {}
-    for routeendchar in keys:
-        if routestartchar != routeendchar:
-            newroutes[routestartchar][routeendchar] = {}
-for oldroute in routes:
-    newroutes[oldroute["startch"]][oldroute["endch"]]["barriers"] = set(oldroute["barriers"])
-    neededkeys = [door.lower() for door in oldroute["barriers"]]
-    newroutes[oldroute["startch"]][oldroute["endch"]]["neededkeys"] = set(neededkeys)
-    newroutes[oldroute["startch"]][oldroute["endch"]]["steps"] = oldroute["steps"]
+#Because the map is simply connected, the keys that are required to
+#reach any given destination fall into two sets:
+# * The set of keys necessary to reach the destination starting from @.
+# * The set of keys that the player must already have based on their
+#   current location.
+# To continue, we need two directories of information:
+# 1. The number of steps from each key (or @) to each other key.
+# 2. The keys needed to get from @ to each key.
 
-# for route in newroutes:
-#     print("{}: {}".format(route,newroutes[route]))
+stepsdir = {} #"fromlocation": {"tolocation1": 20, "loc2": 33, ...
+for routestartchar in routestartchars:
+    stepsdir[routestartchar] = {}
+    for routeendchar in keys:
+        if routestartchar == routeendchar:
+            continue
+        stepsdir[routestartchar][routeendchar] = {}
+for route in routes:
+    stepsdir[route["startch"]][route["endch"]] = route["steps"]
+
+keysneededtoaccess = {} #"a": set('b','c'), "b": set("x","y"), ...
+for route in routes:
+    if route["startch"] != "@":
+        continue
+    keysneeded = set([barrier.lower() for barrier in route["barriers"]])
+    keysneededtoaccess[route["endch"]] = keysneeded
+
+# for start in stepsdir:
+#     print("{}: {}".format(start,stepsdir[start]))
+# for key in keysneededtoaccess:
+#     print("{}: {}".format(key,keysneededtoaccess[key]))
+# exit(1)
 
 def getstepstocomplete(fromch,keyring):
-    if len(keyring) == len(keys): #8.8%
+    if len(keyring) == len(keys):
         return 0
-    neededkeys = keys - keyring #12%
+    neededkeys = keys - keyring
     destopts = []
     for neededkey in neededkeys:
-        if newroutes[fromch][neededkey]["neededkeys"].issubset(keyring): #15%
+        if keysneededtoaccess[neededkey].issubset(keyring):
             destopts.append(neededkey)
 
     destoptsteps = []
@@ -125,9 +141,9 @@ def getstepstocomplete(fromch,keyring):
         newkeyring = keyring.copy() #16%
         newkeyring.add(destopt)
         stepsafterroute = getstepstocomplete(destopt,newkeyring)
-        destoptstep = newroutes[fromch][destopt]["steps"] + stepsafterroute#9%
+        destoptstep = stepsdir[fromch][destopt] + stepsafterroute
         destoptsteps.append(destoptstep)
-    return min(destoptsteps)#7%
+    return min(destoptsteps)
         
 print(getstepstocomplete("@",set()))
 
