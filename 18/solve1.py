@@ -32,28 +32,33 @@ def computedistances(themap,startloc,keyring):
     passable.append(".") #clear tunnels
     #print(passable) #correct
     themap[startloc]["dist"] = 0
-    for loc in themap:
-        if "dist" in themap[loc]:
-            #distance to this location already computed
-            #makes sense to skip recomputation if map is simply connected.
-            #may produce suboptimal routes if map is not simply connected.
-            continue 
-        if themap[loc]["ch"] not in passable:
-            continue #location cannot be occupied
-        ns = getneighbors(loc)
-        ndists = []
-        for n in ns:
-            try:
-                ndist = themap[n]["dist"]
-                ndists.append(ndist)
-            except KeyError:
-                pass
+    lastnumdists = 0
+    numdists = 1
+    while numdists > lastnumdists:
+        lastnumdists = numdists
+        for loc in themap:
+            if "dist" in themap[loc]:
+                #distance to this location already computed
+                #makes sense to skip recomputation if map is simply connected.
+                #may produce suboptimal routes if map is not simply connected.
+                continue 
+            if themap[loc]["ch"] not in passable:
+                continue #location cannot be occupied
+            ns = getneighbors(loc)
+            ndists = []
+            for n in ns:
+                try:
+                    ndist = themap[n]["dist"]
+                    ndists.append(ndist)
+                except KeyError:
+                    pass
 
-        if len(ndists) == 0:
-            #no helpful neighbors
-            continue
-        else:
-            themap[loc]["dist"] = min(ndists)+1
+            if len(ndists) == 0:
+                #no helpful neighbors
+                continue
+            else:
+                themap[loc]["dist"] = min(ndists)+1
+        numdists = len([l for l in themap if "dist" in themap[l]])
 
 computedistances(themap=mymap,startloc=startloc,keyring=[])
     
