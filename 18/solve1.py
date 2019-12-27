@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-debug = False
+debug = True
 if debug:
     inputfile = "sample2.txt"
 else:
@@ -53,9 +53,16 @@ def computedistances(themap,startloc,keyring):
                 #connected.
                 #may produce suboptimal routes if map is not simply
                 #connected.
-                continue 
-            if themap[loc]["ch"] not in passable: # 31% of time here
-                continue #location cannot be occupied
+                continue
+            if themap[loc]["ch"] == "#":
+                #walls are never passable
+                continue
+            if 65 <= ord(themap[loc]["ch"]) <= 90: #a capital letter
+                if themap[loc]["ch"].lower() not in keyring: #no key
+                    continue
+            # not optimized:
+            # if themap[loc]["ch"] not in passable: # 31% of time here
+            #     continue #location cannot be occupied
             ns = getneighbors(loc) # 17% of time here
             ndists = []
             for n in ns:
