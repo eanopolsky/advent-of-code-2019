@@ -3,9 +3,8 @@
 debug = False
 #debug = True
 
-#inputfile = "sample2.txt"
-#inputfile = "sample3.txt"
-inputfile = "myinput.txt"
+inputfile = "sample1b.txt"
+#inputfile = "myinput2.txt"
 
 from asciifb import asciifb
 
