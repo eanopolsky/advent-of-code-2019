@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-debug = True
+debug = False
 if debug:
     inputfile = "sample2.txt"
 else:
@@ -47,20 +47,20 @@ def computedistances(themap,startloc,keyring):
     while numdists > lastnumdists:
         lastnumdists = numdists
         for loc in themap:
-            if "dist" in themap[loc]:
+            if "dist" in themap[loc]: # 4.7% of time here
                 #distance to this location already computed
                 #makes sense to skip recomputation if map is simply
                 #connected.
                 #may produce suboptimal routes if map is not simply
                 #connected.
                 continue 
-            if themap[loc]["ch"] not in passable:
+            if themap[loc]["ch"] not in passable: # 31% of time here
                 continue #location cannot be occupied
-            ns = getneighbors(loc)
+            ns = getneighbors(loc) # 17% of time here
             ndists = []
             for n in ns:
                 try:
-                    ndist = themap[n]["dist"]
+                    ndist = themap[n]["dist"] # 22% of time here
                     ndists.append(ndist)
                 except KeyError:
                     #location hasn't been reached yet
