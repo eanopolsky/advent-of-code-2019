@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
+#debug = False
 debug = True
 if debug:
-    inputfile = "sample1.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -38,6 +39,7 @@ def clearroutes(themap):
 
 keys = "abcdefghijklmnopqrstuvwxyz"
 doors = keys.upper()
+routestartchars = keys + "@"
 
 # need to build a route map:
 #
@@ -68,7 +70,23 @@ def computeroutes(themap,startloc):
                     newwavefront.append(n)
         wavefront = newwavefront
 
-computeroutes(mymap,startloc)
-clearroutes(mymap)
-for loc in mymap:
-    print("{}: {}".format(loc,mymap[loc]))
+#find all possible routes
+routes = []
+for routestartloc in mymap:
+    if mymap[routestartloc]["ch"] not in routestartchars:
+        continue
+    computeroutes(mymap,routestartloc)
+    for routeendloc in mymap:
+        if mymap[routeendloc]["ch"] not in keys:
+            continue
+        if routeendloc == routestartloc:
+            continue
+        route = {"startch": mymap[routestartloc]["ch"],
+                 "end": mymap[routeendloc]["ch"],
+                 "barriers": mymap[routeendloc]["barriers"],
+                 "steps": mymap[routeendloc]["dist"]}
+        routes.append(route)
+    clearroutes(mymap)
+#print(routes) #verify ok
+
+
