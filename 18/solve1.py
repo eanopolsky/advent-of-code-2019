@@ -3,7 +3,7 @@
 #debug = False
 debug = True
 if debug:
-    inputfile = "sample3.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -43,7 +43,7 @@ for loc in mymap:
     if 97 <= ord(mymap[loc]["ch"]) <= 122: #lower case letters
         keys.append(mymap[loc]["ch"])
 #keys = "abcdefghijklmnopqrstuvwxyz"
-doors = [key.upper() for key in keys]
+doors = set([key.upper() for key in keys])
 routestartchars = keys.copy()
 routestartchars.append("@")
 
@@ -111,7 +111,7 @@ for oldroute in routes:
 def getstepstocomplete(fromch,passabledoors):
     if len(passabledoors) == len(keys): 
         return 0
-    neededkeys = set(doors) - passabledoors #26% of time
+    neededkeys = doors - passabledoors
     neededkeys = [neededkey.lower() for neededkey in neededkeys] #10% of time
     destopts = []
     for neededkey in neededkeys:
