@@ -43,9 +43,10 @@ for loc in mymap:
     if 97 <= ord(mymap[loc]["ch"]) <= 122: #lower case letters
         keys.append(mymap[loc]["ch"])
 #keys = "abcdefghijklmnopqrstuvwxyz"
+keys = set(keys)
 doors = set([key.upper() for key in keys])
 routestartchars = keys.copy()
-routestartchars.append("@")
+routestartchars.add("@")
 
 # need to build a route map:
 #
@@ -103,29 +104,30 @@ for routestartchar in routestartchars:
             newroutes[routestartchar][routeendchar] = {}
 for oldroute in routes:
     newroutes[oldroute["startch"]][oldroute["endch"]]["barriers"] = set(oldroute["barriers"])
+    neededkeys = [door.lower() for door in oldroute["barriers"]]
+    newroutes[oldroute["startch"]][oldroute["endch"]]["neededkeys"] = set(neededkeys)
     newroutes[oldroute["startch"]][oldroute["endch"]]["steps"] = oldroute["steps"]
 
 # for route in newroutes:
 #     print("{}: {}".format(route,newroutes[route]))
 
-def getstepstocomplete(fromch,passabledoors):
-    if len(passabledoors) == len(keys): 
+def getstepstocomplete(fromch,keyring):
+    if len(keyring) == len(keys): 
         return 0
-    neededkeys = doors - passabledoors
-    neededkeys = [neededkey.lower() for neededkey in neededkeys] #10% of time
+    neededkeys = keys - keyring
     destopts = []
     for neededkey in neededkeys:
-        if newroutes[fromch][neededkey]["barriers"].issubset(passabledoors):#10%
+        if newroutes[fromch][neededkey]["neededkeys"].issubset(keyring):
             destopts.append(neededkey)
 
     destoptsteps = []
     for destopt in destopts:
-        newpassabledoors = passabledoors.copy()
-        newpassabledoors.add(destopt.upper())
-        stepsafterroute = getstepstocomplete(destopt,newpassabledoors)
+        newkeyring = keyring.copy()
+        newkeyring.add(destopt)
+        stepsafterroute = getstepstocomplete(destopt,newkeyring)
         destoptstep = newroutes[fromch][destopt]["steps"] + stepsafterroute
         destoptsteps.append(destoptstep)
-    return min(destoptsteps) #5.6%
+    return min(destoptsteps)
         
 print(getstepstocomplete("@",set()))
 
