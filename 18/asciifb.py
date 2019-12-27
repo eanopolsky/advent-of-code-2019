@@ -9,14 +9,11 @@ class asciifb:
         if type(n) != type(int()):
             print("wrong type passed to receiveint")
             exit(1)
-        if n == 10:
-            if self.x != 0:
-                #kind of cheating. Eliminates blank lines that were
-                #a problem for the renderer.
-                self.y += 1
-                self.x = 0
-            return
         self.screenmap[(self.x,self.y)] = chr(n)
+        if n == 10:
+            self.y += 1
+            self.x = 0
+            return
         self.x += 1
     def render(self):
         rx = 0
@@ -26,7 +23,6 @@ class asciifb:
                 try:
                     print(self.screenmap[(rx,ry)],end="")
                 except KeyError:
-                    print("")
                     break
                 rx += 1
             ry += 1
