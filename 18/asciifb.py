@@ -24,6 +24,8 @@ class asciifb:
             print("wrong type passed to receivechar")
             exit(1)
         self.receiveint(ord(ch))
+    def getmap(self):
+        return self.screenmap
     def render(self):
         rx = 0
         ry = 0
