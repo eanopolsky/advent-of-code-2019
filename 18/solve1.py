@@ -25,6 +25,13 @@ def getneighbors(loc):
     neighbors.append((loc[0],loc[1]+1))
     return neighbors
 
+def cleardistances(themap):
+    for loc in themap:
+        try:
+            del themap[loc]["dist"]
+        except KeyError:
+            pass
+
 def computedistances(themap,startloc,keyring):
     passable = []
     passable.append("@") #start location
@@ -40,8 +47,10 @@ def computedistances(themap,startloc,keyring):
         for loc in themap:
             if "dist" in themap[loc]:
                 #distance to this location already computed
-                #makes sense to skip recomputation if map is simply connected.
-                #may produce suboptimal routes if map is not simply connected.
+                #makes sense to skip recomputation if map is simply
+                #connected.
+                #may produce suboptimal routes if map is not simply
+                #connected.
                 continue 
             if themap[loc]["ch"] not in passable:
                 continue #location cannot be occupied
@@ -52,6 +61,8 @@ def computedistances(themap,startloc,keyring):
                     ndist = themap[n]["dist"]
                     ndists.append(ndist)
                 except KeyError:
+                    #location hasn't been reached yet
+                    #or is off the map
                     pass
 
             if len(ndists) == 0:
@@ -61,6 +72,7 @@ def computedistances(themap,startloc,keyring):
                 themap[loc]["dist"] = min(ndists)+1
         numdists = len([l for l in themap if "dist" in themap[l]])
 
-computedistances(themap=mymap,startloc=startloc,keyring=[])
-    
-print(mymap)
+computedistances(themap=mymap,startloc=startloc,keyring=[]) #works
+cleardistances(mymap)
+#print(mymap)
+
