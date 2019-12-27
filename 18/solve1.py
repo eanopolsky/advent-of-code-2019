@@ -32,10 +32,12 @@ def cleardistances(themap):
         except KeyError:
             pass
 
+keys = "abcdefghijklmnopqrstuvwxyz"
+
 def computedistances(themap,startloc,keyring):
     passable = []
     passable.append("@") #start location
-    passable.extend([ch for ch in "abcdefghijklmnopqrstuvwxyz"]) #keys
+    passable.extend([ch for ch in keys]) #keys
     passable.append(".") #clear tunnels
     passable.extend([ch.upper() for ch in keyring]) #unlocked doors
     #print(passable) #correct
@@ -72,7 +74,11 @@ def computedistances(themap,startloc,keyring):
                 themap[loc]["dist"] = min(ndists)+1
         numdists = len([l for l in themap if "dist" in themap[l]])
 
-computedistances(themap=mymap,startloc=startloc,keyring=[]) #works
-cleardistances(mymap)
-#print(mymap)
-
+keyring = []
+computedistances(themap=mymap,startloc=startloc,keyring=keyring) #works
+#cleardistances(mymap)
+destinations = [loc for loc in mymap
+                if "dist" in mymap[loc] #reachable
+                and mymap[loc]["ch"] in keys #consider only keys
+                and mymap[loc]["ch"] not in keyring ]#key we don't have
+print(destinations)
