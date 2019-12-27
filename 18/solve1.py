@@ -38,13 +38,14 @@ def clearroutes(themap):
             pass
 
 
-keys = ""
+keys = []
 for loc in mymap:
     if 97 <= ord(mymap[loc]["ch"]) <= 122: #lower case letters
-        keys += mymap[loc]["ch"]
+        keys.append(mymap[loc]["ch"])
 #keys = "abcdefghijklmnopqrstuvwxyz"
-doors = keys.upper()
-routestartchars = keys + "@"
+doors = [key.upper() for key in keys]
+routestartchars = keys.copy()
+routestartchars.append("@")
 
 # need to build a route map:
 #
