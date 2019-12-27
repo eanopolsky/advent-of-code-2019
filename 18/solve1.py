@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample2.txt"
+    inputfile = "sample3.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -48,11 +48,11 @@ def computedistances(themap,startloc,keyring):
         lastmaxdist = maxdist
         newmaxdist = maxdist
         for loc in themap:
-            if "dist" not in themap[loc] or themap[loc]["dist"] != maxdist:
+            if "dist" not in themap[loc] or themap[loc]["dist"] != maxdist:# 44% of time here
                 continue #only consider the wavefront
             ns = getneighbors(loc)
             for n in ns:
-                if "dist" in themap[n] or themap[n]["ch"] not in passable:
+                if "dist" in themap[n] or themap[n]["ch"] not in passable: # 24% of time here
                     continue
                 else:
                     themap[n]["dist"] = themap[loc]["dist"] + 1
