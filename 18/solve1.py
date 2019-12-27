@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample2.txt"
+    inputfile = "sample3.txt"
 else:
     inputfile = "myinput.txt"
 
