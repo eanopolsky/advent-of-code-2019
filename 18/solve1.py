@@ -25,7 +25,7 @@ def getneighbors(loc):
     neighbors.append((loc[0],loc[1]+1))
     return neighbors
 
-def cleardistances(themap):
+def clearroutes(themap):
     for loc in themap:
         try:
             del themap[loc]["dist"]
@@ -69,6 +69,6 @@ def computeroutes(themap,startloc):
         wavefront = newwavefront
 
 computeroutes(mymap,startloc)
-
+clearroutes(mymap)
 for loc in mymap:
     print("{}: {}".format(loc,mymap[loc]))
