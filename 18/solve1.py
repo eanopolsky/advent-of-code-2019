@@ -88,15 +88,29 @@ for routestartloc in mymap:
         if routeendloc == routestartloc:
             continue
         route = {"startch": mymap[routestartloc]["ch"],
-                 "end": mymap[routeendloc]["ch"],
+                 "endch": mymap[routeendloc]["ch"],
                  "barriers": mymap[routeendloc]["barriers"],
                  "steps": mymap[routeendloc]["dist"]}
         routes.append(route)
     clearroutes(mymap)
-print(routes) #verify ok
+
+# #validation ok:
+# for route in routes:
+#     print(route)
 
 locch = "@"
 keyring = []
 
-
+def getstepstocomplete(fromch,keyring):
+    if len(keyring) == len(keys):
+        return 0
+    routeopts = routes.copy()
+    routeopts = [opt for opt in routeopts if opt["startch"] == fromch]
+    routeopts = [opt for opt in routeopts if opt["endch"] not in keyring]
+    unlockabledoors = set([key.upper() for key in keyring])
+    routeopts = [opt for opt in routeopts if set(opt["barriers"]).issubset(unlockabledoors)]
+    for routeopt in routeopts:
+        print(routeopt)
+        
+getstepstocomplete("@",[])
 
