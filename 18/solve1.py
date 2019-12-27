@@ -94,29 +94,38 @@ for routestartloc in mymap:
         routes.append(route)
     clearroutes(mymap)
 
-# #validation ok:
-# for route in routes:
-#     print(route)
+#reorganize route data for better performance
+newroutes = {}
+for routestartchar in routestartchars:
+    newroutes[routestartchar] = {}
+    for routeendchar in keys:
+        if routestartchar != routeendchar:
+            newroutes[routestartchar][routeendchar] = {}
+for oldroute in routes:
+    newroutes[oldroute["startch"]][oldroute["endch"]]["barriers"] = oldroute["barriers"]
+    newroutes[oldroute["startch"]][oldroute["endch"]]["steps"] = oldroute["steps"]
 
-locch = "@"
-keyring = []
+# for route in newroutes:
+#     print("{}: {}".format(route,newroutes[route]))
 
 def getstepstocomplete(fromch,keyring):
     if len(keyring) == len(keys):
         return 0
-    routeopts = routes.copy()
-    routeopts = [opt for opt in routeopts if opt["startch"] == fromch]
-    routeopts = [opt for opt in routeopts if opt["endch"] not in keyring]
-    unlockabledoors = set([key.upper() for key in keyring])
-    routeopts = [opt for opt in routeopts if set(opt["barriers"]).issubset(unlockabledoors)]
-    routeoptsteps = []
-    for routeopt in routeopts:
+    neededkeys = set(keys) - set(keyring)
+    destopts = []
+    passabledoors = [key.upper() for key in keyring]
+    for neededkey in neededkeys:
+        if set(newroutes[fromch][neededkey]["barriers"]).issubset(set(passabledoors)):
+            destopts.append(neededkey)
+
+    destoptsteps = []
+    for destopt in destopts:
         newkeyring = keyring.copy()
-        newkeyring.append(routeopt["endch"])
-        stepsafterroute = getstepstocomplete(routeopt["endch"],newkeyring)
-        routeoptstep = routeopt["steps"] + stepsafterroute
-        routeoptsteps.append(routeoptstep)
-    return min(routeoptsteps)
+        newkeyring.append(destopt)
+        stepsafterroute = getstepstocomplete(destopt,newkeyring)
+        destoptstep = newroutes[fromch][destopt]["steps"] + stepsafterroute
+        destoptsteps.append(destoptstep)
+    return min(destoptsteps)
         
 print(getstepstocomplete("@",[]))
 
