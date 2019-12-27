@@ -37,7 +37,12 @@ def clearroutes(themap):
         except KeyError:
             pass
 
-keys = "abcdefghijklmnopqrstuvwxyz"
+
+keys = ""
+for loc in mymap:
+    if 97 <= ord(mymap[loc]["ch"]) <= 122: #lower case letters
+        keys += mymap[loc]["ch"]
+#keys = "abcdefghijklmnopqrstuvwxyz"
 doors = keys.upper()
 routestartchars = keys + "@"
 
@@ -87,6 +92,10 @@ for routestartloc in mymap:
                  "steps": mymap[routeendloc]["dist"]}
         routes.append(route)
     clearroutes(mymap)
-#print(routes) #verify ok
+print(routes) #verify ok
+
+locch = "@"
+keyring = []
+
 
 
