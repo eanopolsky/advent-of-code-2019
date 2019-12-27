@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample2.txt"
+    inputfile = "sample1.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -31,17 +31,24 @@ def cleardistances(themap):
             del themap[loc]["dist"]
         except KeyError:
             pass
+        try:
+            del themap[loc]["barriers"]
+        except KeyError:
+            pass
 
 keys = "abcdefghijklmnopqrstuvwxyz"
+doors = keys.upper()
 
-def computedistances(themap,startloc,keyring):
-    passable = []
-    passable.append("@") #start location
-    passable.extend([ch for ch in keys]) #keys
-    passable.append(".") #clear tunnels
-    passable.extend([ch.upper() for ch in keyring]) #unlocked doors
-    #print(passable) #correct
+# need to build a route map:
+#
+# from: starting location (either @ or a key)
+# to: ending location (always a key)
+# barriers: list of doors traversed on the way
+# steps: step count for route
+
+def computeroutes(themap,startloc):
     themap[startloc]["dist"] = 0
+    themap[startloc]["barriers"] = []
     wavefront = [startloc]
     while len(wavefront) != 0:
         newwavefront = []
@@ -53,43 +60,15 @@ def computedistances(themap,startloc,keyring):
                 ch = themap[n]["ch"]
                 if ch == "#":
                     continue
-                if ch not in passable:
-                    continue
                 else:
                     themap[n]["dist"] = themap[loc]["dist"] + 1
+                    themap[n]["barriers"] = themap[loc]["barriers"].copy()
+                    if ch in doors:
+                        themap[n]["barriers"].append(ch)
                     newwavefront.append(n)
         wavefront = newwavefront
 
-                    
+computeroutes(mymap,startloc)
 
-keyring = []
-def getstepstocomplete(themap,startloc,keyring):
-    computedistances(themap=themap,startloc=startloc,keyring=keyring) #works
-    #cleardistances(mymap)
-    destinations = [loc for loc in mymap
-                    if "dist" in mymap[loc] #reachable
-                    and mymap[loc]["ch"] in keys #consider only keys
-                    and mymap[loc]["ch"] not in keyring ]#key we don't have
-    # print(destinations)
-    # for d in destinations:
-    #     print(themap[d]["ch"])
-    if len(destinations) == 0:
-        #no more keys to collect
-        return 0
-    else:
-        destdata = {}
-        for d in destinations:
-            destdata[d] = {"steps2dest": themap[d]["dist"]}
-        for d in destinations:
-            newkeyring = keyring.copy()
-            newkeyring.append(themap[d]["ch"])
-            cleardistances(themap)
-            stepstocomplete = getstepstocomplete(themap,d,newkeyring)
-            destdata[d]["stepsafterdest"] = stepstocomplete
-        for d in destinations:
-            destdata[d]["totalsteps"] = destdata[d]["steps2dest"] + \
-                destdata[d]["stepsafterdest"]
-        steptotals = [destdata[d]["totalsteps"] for d in destdata]
-        return min(steptotals)
-
-print(getstepstocomplete(themap=mymap,startloc=startloc,keyring=keyring))
+for loc in mymap:
+    print("{}: {}".format(loc,mymap[loc]))
