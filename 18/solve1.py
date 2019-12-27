@@ -3,7 +3,7 @@
 #debug = False
 debug = True
 if debug:
-    inputfile = "sample3.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -102,7 +102,7 @@ for routestartchar in routestartchars:
         if routestartchar != routeendchar:
             newroutes[routestartchar][routeendchar] = {}
 for oldroute in routes:
-    newroutes[oldroute["startch"]][oldroute["endch"]]["barriers"] = oldroute["barriers"]
+    newroutes[oldroute["startch"]][oldroute["endch"]]["barriers"] = set(oldroute["barriers"])
     newroutes[oldroute["startch"]][oldroute["endch"]]["steps"] = oldroute["steps"]
 
 # for route in newroutes:
@@ -111,21 +111,21 @@ for oldroute in routes:
 def getstepstocomplete(fromch,keyring):
     if len(keyring) == len(keys):
         return 0
-    neededkeys = set(keys) - set(keyring) #17% of time
+    neededkeys = set(keys) - keyring #17% of time
     destopts = []
     passabledoors = [key.upper() for key in keyring] #23% of time
     for neededkey in neededkeys:
-        if set(newroutes[fromch][neededkey]["barriers"]).issubset(set(passabledoors)): #31% of time
+        if newroutes[fromch][neededkey]["barriers"].issubset(set(passabledoors)): #31% of time
             destopts.append(neededkey)
 
     destoptsteps = []
     for destopt in destopts:
         newkeyring = keyring.copy()
-        newkeyring.append(destopt)
+        newkeyring.add(destopt)
         stepsafterroute = getstepstocomplete(destopt,newkeyring)
         destoptstep = newroutes[fromch][destopt]["steps"] + stepsafterroute
         destoptsteps.append(destoptstep)
     return min(destoptsteps)
         
-print(getstepstocomplete("@",[]))
+print(getstepstocomplete("@",set()))
 
