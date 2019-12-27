@@ -9,7 +9,11 @@ class asciifb:
         if type(n) != type(int()):
             print("wrong type passed to receiveint")
             exit(1)
-        self.screenmap[(self.x,self.y)] = chr(n)
+        try:
+            self.screenmap[(self.x,self.y)]["ch"] = chr(n)
+        except KeyError:
+            self.screenmap[(self.x,self.y)] = {}
+            self.screenmap[(self.x,self.y)]["ch"] = chr(n)
         if n == 10:
             self.y += 1
             self.x = 0
@@ -26,7 +30,7 @@ class asciifb:
         while True: #iterate over lines
             while True: #iterate over line
                 try:
-                    print(self.screenmap[(rx,ry)],end="")
+                    print(self.screenmap[(rx,ry)]["ch"],end="")
                 except KeyError:
                     break
                 rx += 1
