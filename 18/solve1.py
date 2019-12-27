@@ -42,23 +42,19 @@ def computedistances(themap,startloc,keyring):
     passable.extend([ch.upper() for ch in keyring]) #unlocked doors
     #print(passable) #correct
     themap[startloc]["dist"] = 0
-    lastmaxdist = -1
-    maxdist = 0
-    while maxdist > lastmaxdist:
-        lastmaxdist = maxdist
-        newmaxdist = maxdist
-        for loc in themap:
-            if "dist" not in themap[loc] or themap[loc]["dist"] != maxdist:# 44% of time here
-                continue #only consider the wavefront
+    wavefront = [startloc]
+    while len(wavefront) != 0:
+        newwavefront = []
+        for loc in wavefront:
             ns = getneighbors(loc)
             for n in ns:
-                if "dist" in themap[n] or themap[n]["ch"] not in passable: # 24% of time here
+                if "dist" in themap[n] or themap[n]["ch"] not in passable: #54% of time here
                     continue
                 else:
                     themap[n]["dist"] = themap[loc]["dist"] + 1
-                    if themap[n]["dist"] > newmaxdist:
-                        newmaxdist = themap[n]["dist"]
-        maxdist = newmaxdist
+                    newwavefront.append(n)
+        wavefront = newwavefront
+
                     
 
 keyring = []
