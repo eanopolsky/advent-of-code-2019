@@ -3,7 +3,7 @@
 #debug = False
 debug = True
 if debug:
-    inputfile = "sample2.txt"
+    inputfile = "sample3.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -111,11 +111,11 @@ for oldroute in routes:
 def getstepstocomplete(fromch,keyring):
     if len(keyring) == len(keys):
         return 0
-    neededkeys = set(keys) - set(keyring)
+    neededkeys = set(keys) - set(keyring) #17% of time
     destopts = []
-    passabledoors = [key.upper() for key in keyring]
+    passabledoors = [key.upper() for key in keyring] #23% of time
     for neededkey in neededkeys:
-        if set(newroutes[fromch][neededkey]["barriers"]).issubset(set(passabledoors)):
+        if set(newroutes[fromch][neededkey]["barriers"]).issubset(set(passabledoors)): #31% of time
             destopts.append(neededkey)
 
     destoptsteps = []
