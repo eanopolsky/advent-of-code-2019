@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample3.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -46,17 +46,17 @@ def computedistances(themap,startloc,keyring):
     while len(wavefront) != 0:
         newwavefront = []
         for loc in wavefront:
-            ns = getneighbors(loc) #19% of time here
+            ns = getneighbors(loc)
             for n in ns:
-                if "dist" in themap[n]: #13% of time here
+                if "dist" in themap[n]:
                     continue
-                ch = themap[n]["ch"] #7% of time here
-                if ch == "#": #2% here
+                ch = themap[n]["ch"]
+                if ch == "#":
                     continue
-                if ch not in passable: #12% of time here
+                if ch not in passable:
                     continue
                 else:
-                    themap[n]["dist"] = themap[loc]["dist"] + 1 #5% of time here
+                    themap[n]["dist"] = themap[loc]["dist"] + 1
                     newwavefront.append(n)
         wavefront = newwavefront
 
