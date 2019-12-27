@@ -127,11 +127,19 @@ for route in routes:
 #     print("{}: {}".format(key,keysneededtoaccess[key]))
 # exit(1)
 
+pathcache = {}
+#entries:
+# tuple(fromch,set(keyring)): numsteps
+
 def getstepstocomplete(fromch,keyring):
+    pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
     if debug:
         print("")
         print("now at {}. Keyring: {}".format(fromch, keyring))
+    if pathcachekey in pathcache:
+        return pathcache[pathcachekey]
     if len(keyring) == len(keys):
+        pathcache[pathcachekey] = 0
         return 0
     neededkeys = keys - keyring
     destopts = []
@@ -148,6 +156,7 @@ def getstepstocomplete(fromch,keyring):
         stepsafterroute = getstepstocomplete(destopt,newkeyring)
         destoptstep = stepsdir[fromch][destopt] + stepsafterroute
         destoptsteps.append(destoptstep)
+    pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
 print(getstepstocomplete("@",set()))
