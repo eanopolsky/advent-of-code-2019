@@ -46,11 +46,14 @@ def computedistances(themap,startloc,keyring):
     while len(wavefront) != 0:
         newwavefront = []
         for loc in wavefront:
-            ns = getneighbors(loc) #13% of time here
+            ns = getneighbors(loc) #19% of time here
             for n in ns:
-                if "dist" in themap[n]: #10% of time here
+                if "dist" in themap[n]: #13% of time here
                     continue
-                if themap[n]["ch"] not in passable: #41% of time here
+                ch = themap[n]["ch"] #7% of time here
+                if ch == "#": #2% here
+                    continue
+                if ch not in passable: #12% of time here
                     continue
                 else:
                     themap[n]["dist"] = themap[loc]["dist"] + 1 #5% of time here
