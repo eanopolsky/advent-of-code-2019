@@ -2,7 +2,7 @@
 
 debug = True
 if debug:
-    inputfile = "sample3.txt"
+    inputfile = "sample2.txt"
 else:
     inputfile = "myinput.txt"
 
@@ -42,44 +42,24 @@ def computedistances(themap,startloc,keyring):
     passable.extend([ch.upper() for ch in keyring]) #unlocked doors
     #print(passable) #correct
     themap[startloc]["dist"] = 0
-    lastnumdists = 0
-    numdists = 1
-    while numdists > lastnumdists:
-        lastnumdists = numdists
+    lastmaxdist = -1
+    maxdist = 0
+    while maxdist > lastmaxdist:
+        lastmaxdist = maxdist
+        newmaxdist = maxdist
         for loc in themap:
-            if "dist" in themap[loc]: # 4.7% of time here
-                #distance to this location already computed
-                #makes sense to skip recomputation if map is simply
-                #connected.
-                #may produce suboptimal routes if map is not simply
-                #connected.
-                continue
-            if themap[loc]["ch"] == "#":
-                #walls are never passable
-                continue
-            if 65 <= ord(themap[loc]["ch"]) <= 90: #a capital letter
-                if themap[loc]["ch"].lower() not in keyring: #no key
-                    continue
-            # not optimized:
-            # if themap[loc]["ch"] not in passable: # 31% of time here
-            #     continue #location cannot be occupied
-            ns = getneighbors(loc) # 17% of time here
-            ndists = []
+            if "dist" not in themap[loc] or themap[loc]["dist"] != maxdist:
+                continue #only consider the wavefront
+            ns = getneighbors(loc)
             for n in ns:
-                try:
-                    ndist = themap[n]["dist"] # 22% of time here
-                    ndists.append(ndist)
-                except KeyError:
-                    #location hasn't been reached yet
-                    #or is off the map
-                    pass
-
-            if len(ndists) == 0:
-                #no helpful neighbors
-                continue
-            else:
-                themap[loc]["dist"] = min(ndists)+1
-        numdists = len([l for l in themap if "dist" in themap[l]])
+                if "dist" in themap[n] or themap[n]["ch"] not in passable:
+                    continue
+                else:
+                    themap[n]["dist"] = themap[loc]["dist"] + 1
+                    if themap[n]["dist"] > newmaxdist:
+                        newmaxdist = themap[n]["dist"]
+        maxdist = newmaxdist
+                    
 
 keyring = []
 def getstepstocomplete(themap,startloc,keyring):
