@@ -109,8 +109,14 @@ def getstepstocomplete(fromch,keyring):
     routeopts = [opt for opt in routeopts if opt["endch"] not in keyring]
     unlockabledoors = set([key.upper() for key in keyring])
     routeopts = [opt for opt in routeopts if set(opt["barriers"]).issubset(unlockabledoors)]
+    routeoptsteps = []
     for routeopt in routeopts:
-        print(routeopt)
+        newkeyring = keyring.copy()
+        newkeyring.append(routeopt["endch"])
+        stepsafterroute = getstepstocomplete(routeopt["endch"],newkeyring)
+        routeoptstep = routeopt["steps"] + stepsafterroute
+        routeoptsteps.append(routeoptstep)
+    return min(routeoptsteps)
         
-getstepstocomplete("@",[])
+print(getstepstocomplete("@",[]))
 
