@@ -164,14 +164,14 @@ pathcache = {}
 #
 # keyring is a shared keyring among all robots
 def getstepstocomplete(fromchs,keyring):
-    pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
+    #pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
     if debug:
         print("")
         print("now at {}. Keyring: {}".format(fromch, keyring))
-    if pathcachekey in pathcache:
-        return pathcache[pathcachekey]
+    # if pathcachekey in pathcache:
+    #     return pathcache[pathcachekey]
     if len(keyring) == len(keys):
-        pathcache[pathcachekey] = 0
+        # pathcache[pathcachekey] = 0
         return 0
     neededkeys = keys - keyring
     destopts = []
@@ -188,7 +188,7 @@ def getstepstocomplete(fromchs,keyring):
         stepsafterroute = getstepstocomplete(destopt,newkeyring)
         destoptstep = stepsdir[fromch][destopt] + stepsafterroute
         destoptsteps.append(destoptstep)
-    pathcache[pathcachekey] = min(destoptsteps)
+    # pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
 print(getstepstocomplete("@",set()))
