@@ -139,9 +139,9 @@ addlayer()
 
 for loc in layers[0]:
     if "start" in layers[0][loc]:
-        startloc = (0,loc)
+        startlloc = (0,loc)
     if "end" in layers[0][loc]:
-        endloc = (0,loc)
+        endlloc = (0,loc)
 
 def linkportals():
     if (len(layers) == 1):
@@ -166,48 +166,41 @@ def linkportals():
         hlayer[hconnectedspace]["portaldest"] = (llayernum,lconnectedspace)
         llayer[lconnectedspace]["portaldest"] = (hlayernum,hconnectedspace)
 
-addlayer()
-linkportals()
+# addlayer()
+# linkportals()
+# addlayer()
+# linkportals()
+# for layernum in range(len(layers)):
+#     for loc in layers[layernum]:
+#         if "portal" in layers[layernum][loc]:
+#             print(layernum,loc,layers[layernum][loc])
 
-for layernum in range(len(layers)):
-    for loc in layers[layernum]:
-        if "portal" in layers[layernum][loc]:
-            print(layernum,loc,layers[layernum][loc])
+# exit(1)
 
-exit(1)
-
-def getneighborspaces(loc):
+def getneighborspaces(lloc):
+    layernum = lloc[0]
+    loc = lloc[1]
     adjacent = []
-    adjacent.append((loc[0]-1,loc[1]))
-    adjacent.append((loc[0]+1,loc[1]))
-    adjacent.append((loc[0],loc[1]-1))
-    adjacent.append((loc[0],loc[1]+1))
+    adjacent.append( (layernum,(loc[0]-1,loc[1])) )
+    adjacent.append( (layernum,(loc[0]+1,loc[1])) )
+    adjacent.append( (layernum,(loc[0],loc[1]-1)) )
+    adjacent.append( (layernum,(loc[0],loc[1]+1)) )
     neighbors = []
     for space in adjacent:
-        if mymap[space]["ch"] == ".":
+        if layers[space[0]][space[1]]["ch"] == ".":
             neighbors.append(space)
-    if "portaldest" in mymap[loc]:
-        neighbors.append(mymap[loc]["portaldest"])
+    if "portaldest" in layers[layernum][loc]:
+        neighbors.append(layers[layernum][loc]["portaldest"])
     return neighbors
 
-# def clearroutes(themap):
-#     for loc in themap:
-#         try:
-#             del themap[loc]["dist"]
-#         except KeyError:
-#             pass
-#         try:
-#             del themap[loc]["barriers"]
-#         except KeyError:
-#             pass
-
-def computedists(themap,startloc):
-    themap[startloc]["dist"] = 0
-    wavefront = [startloc]
+def computedists(layers,startlloc):
+    wavefront = startllocs
     while len(wavefront) != 0:
         newwavefront = []
-        for loc in wavefront:
-            ns = getneighborspaces(loc) #returns only passable neighbors: ., portals
+        for lloc in wavefront:
+            ns = getneighborspaces(lloc) #returns only passable neighbors: ., portals
+            print(ns)
+            exit(1)
             for n in ns:
                 if "dist" not in themap[n]:
                     themap[n]["dist"] = themap[loc]["dist"] + 1
@@ -219,6 +212,8 @@ def computedists(themap,startloc):
                     continue
         wavefront = newwavefront
 
-computedists(mymap,startloc)
+layers[startlloc[0]][startlloc[1]]["dist"] = 0
+startllocs = [startlloc]
+computedists(layers,startllocs)
 
-print(mymap[endloc]["dist"])
+#print(mymap[endloc]["dist"])
