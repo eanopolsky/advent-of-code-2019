@@ -113,20 +113,27 @@ def addlayer():
             if portalname == "AA" or portalname == "ZZ":
                 continue
             for loc in newlayer:
-                if (newlayer[loc]["portal"] == portalname and
-                    newlayer[loc]["portaldir"] == "out"):
-                    newlayerportalloc = loc
-                    break
+                try:
+                    if (newlayer[loc]["portal"] == portalname and
+                        newlayer[loc]["portaldir"] == "out"):
+                        newlayerportalloc = loc
+                        break
+                except KeyError:
+                    continue
             for loc in prevlayer:
-                if (prevlayer[loc]["portal"] == portalname and
-                    prevlayer[loc]["portaldir"] == "in"):
-                    prevlayerportalloc = loc
-                    break
+                try:
+                    if (prevlayer[loc]["portal"] == portalname and
+                        prevlayer[loc]["portaldir"] == "in"):
+                        prevlayerportalloc = loc
+                        break
+                except KeyError:
+                    continue
             #portaldest now includes a destination layer and location
-            prevlayer[prevlayerportalloc]["portaldest"] = (newlayernum,
+            prevlayer[prevlayerportalloc]["portaldest"] = (layernum,
                                                            newlayerportalloc)
             newlayer[newlayerportalloc]["portaldest"] = (prevlayernum,
                                                          prevlayerportalloc)
+addlayer()
 addlayer()
 for layernum in range(len(layers)):
     for loc in layers[layernum]:
