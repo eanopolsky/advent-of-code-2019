@@ -5,9 +5,9 @@ from copy import deepcopy
 #debug = False
 #debug = True
 
-inputfile = "sample1.txt"
+#inputfile = "sample1.txt"
 #inputfile = "sample2.txt"
-#inputfile = "myinput.txt"
+inputfile = "myinput.txt"
 
 from asciifb import asciifb
 
@@ -210,7 +210,10 @@ startllocs = [startlloc]
 computedists(layers,startllocs)
 
 def getdist2end():
-    return layers[endlloc[0]][endlloc[1]]["dist"]
+    try:
+        return layers[endlloc[0]][endlloc[1]]["dist"]
+    except KeyError:
+        return "unknown"
 #print(getdist2end())
 
 # addlayer()
@@ -232,18 +235,19 @@ def getnewwavefront():
             newwavefront.append((wavelayernum,loc))
     return newwavefront
 
-addlayer()
-linkportals()
-print(getnewwavefront())
-exit(1)
+# addlayer()
+# linkportals()
+# print(getnewwavefront())
+# exit(1)
 
-olddist2end = 99999999
+olddist2end = "unknown"
 newdist2end = getdist2end()
-while newdist2end > olddist2end:
+while newdist2end == "unknown":
+    olddist2end = newdist2end
     addlayer()
+    print(len(layers)) #gets to at least 50 layers. Fishy.
     linkportals()
-    
+    computedists(layers,getnewwavefront())
+    newdist2end = getdist2end()
 
-
-
-#print(mymap[endloc]["dist"])
+print(getdist2end())
