@@ -227,13 +227,15 @@ def getnewwavefront():
             newwavefront.append((wavelayernum,loc))
     return newwavefront
 
+# addlayer()
+# linkportals()
+# for lloc in getnewwavefront():
+#     print(lloc)
+#     print(layers[lloc[0]][lloc[1]])
+# exit(1)
+
 addlayer()
 linkportals()
-for lloc in getnewwavefront():
-    print(lloc)
-    print(layers[lloc[0]][lloc[1]])
-exit(1)
-
 computedists(layers,getnewwavefront())
 for layernum in range(len(layers)):
     for loc in layers[layernum]:
