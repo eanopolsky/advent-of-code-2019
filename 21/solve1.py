@@ -6,4 +6,6 @@ with open("myinput.txt") as f:
     memory = [int(x) for x in f.readline().split(",")]
 
 springdroid = intcodevm.intcodevm(memory=memory,name="springdroid")
-
+springdroid.setinputmode("ascii")
+springdroid.setoutputmode("printascii")
+springdroid.run()

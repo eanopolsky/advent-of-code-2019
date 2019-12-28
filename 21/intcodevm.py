@@ -74,6 +74,7 @@ class intcodevm:
                           "relbase": 0 }
         self.running = False
         self.inputqueue = Queue()
+        self.asciiqueue = Queue()
         self.getinput = input
         self.outputqueue = Queue()
         self.output = print
@@ -93,8 +94,13 @@ class intcodevm:
             exit(1)
 
     def getasciiinput(self):
-        ch = getch()
-        return ord(ch)
+        if self.asciiqueue.empty():
+            asciiinput = input()
+            asciiinput += "\n"
+            for char in asciiinput:
+                #print("putting {} in ascii input queue".format(ord(char)))
+                self.asciiqueue.put(ord(char))
+        return self.asciiqueue.get()
     
     def queueinput(self,value):
         self.inputqueue.put(value)
