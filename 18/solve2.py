@@ -156,14 +156,14 @@ pathcache = {}
 #
 # keyring is a shared keyring among all robots
 def getstepstocomplete(fromchs,keyring):
-    #pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
+    pathcachekey = tuple([tuple(fromchs), tuple(sorted(list(keyring)))])
     if debug:
         print("")
         print("Robot locations: {}. Shared keyring: {}".format(fromchs, keyring))
-    # if pathcachekey in pathcache:
-    #     return pathcache[pathcachekey]
+    if pathcachekey in pathcache:
+        return pathcache[pathcachekey]
     if len(keyring) == len(keys):
-        # pathcache[pathcachekey] = 0
+        pathcache[pathcachekey] = 0
         return 0
     neededkeys = keys - keyring
     #destopts now contains tuples of the form (vaultnum, key)
@@ -198,7 +198,7 @@ def getstepstocomplete(fromchs,keyring):
         destoptstep = stepstodestopt + stepsafterdestopt
         destoptsteps.append(destoptstep)        
 
-    # pathcache[pathcachekey] = min(destoptsteps)
+    pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
 print(getstepstocomplete(fromchs=["@" for vault in vaults],keyring=set()))
