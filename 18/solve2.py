@@ -84,6 +84,15 @@ for robotstartloc in robotstartlocs:
 # print(vaults)
 # exit(1)
 
+#Because the map is simply connected, the keys that are required to
+#reach any given destination fall into two sets:
+# * The set of keys necessary to reach the destination starting from @.
+# * The set of keys that the player must already have based on their
+#   current location.
+# To continue, we need two directories of information:
+# 1. The number of steps from each key (or @) to each other key.
+# 2. The keys needed to get from @ to each key.
+
 for vault in vaults:
     keyspresent = set()
     computeroutes(mymap,vault["robotstartloc"])
@@ -136,23 +145,10 @@ for vault in vaults:
         keysneededtoaccess[route["endch"]] = keysneeded
     vault["keysneededtoaccess"] = keysneededtoaccess
 
-    
-for vault in vaults:
-    print(vault)
+# for vault in vaults:
+#     print(vault)
 exit(1)
-    
-    
 
-
-
-#Because the map is simply connected, the keys that are required to
-#reach any given destination fall into two sets:
-# * The set of keys necessary to reach the destination starting from @.
-# * The set of keys that the player must already have based on their
-#   current location.
-# To continue, we need two directories of information:
-# 1. The number of steps from each key (or @) to each other key.
-# 2. The keys needed to get from @ to each key.
 
 
 
