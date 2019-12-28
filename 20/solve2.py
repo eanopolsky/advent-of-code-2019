@@ -183,7 +183,7 @@ def getneighborspaces(lloc):
         neighbors.append(layers[layernum][loc]["portaldest"])
     return neighbors
 
-def computedists(layers,startlloc):
+def computedists(layers,startllocs):
     wavefront = startllocs
     while len(wavefront) != 0:
         newwavefront = []
@@ -222,13 +222,19 @@ def getnewwavefront():
     wavelayer = layers[wavelayernum]
     for loc in wavelayer:
         if ("portaldir" in wavelayer[loc] and
-            wavelayer[loc]["portaldir"] == "in"):
+            wavelayer[loc]["portaldir"] == "in" and
+            "dist" in wavelayer[loc]):
             newwavefront.append((wavelayernum,loc))
     return newwavefront
 
 addlayer()
 linkportals()
-print(getnewwavefront())
+for lloc in getnewwavefront():
+    print(lloc)
+    print(layers[lloc[0]][lloc[1]])
+exit(1)
+
+computedists(layers,getnewwavefront())
 for layernum in range(len(layers)):
     for loc in layers[layernum]:
         if "portal" in layers[layernum][loc]:
