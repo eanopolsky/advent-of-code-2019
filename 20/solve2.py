@@ -60,8 +60,7 @@ while True:
         break
     else:
         y += 1
-print(innerring)
-exit(1)
+#print(innerring)
 
 # tag portal-adjacent spaces
 letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -80,6 +79,14 @@ for loc in mymap:
         else:
             continue
         mymap[loc]["portal"] = portal
+        if (innerring["startx"] <= loc[0] <= innerring["endx"] and
+            innerring["starty"] <= loc[1] <= innerring["endy"]):
+            mymap[loc]["portaldir"] = "in"
+        else:
+            mymap[loc]["portaldir"] = "out"
+
+print(mymap)
+exit(1)
 
 originalmap = mymap
 layers = []
