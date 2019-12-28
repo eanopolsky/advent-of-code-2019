@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-#debug = False
-debug = True
+debug = False
+#debug = True
 
 inputfile = "sample1b.txt"
 #inputfile = "myinput2.txt"
@@ -197,12 +197,13 @@ def getstepstocomplete(fromchs,keyring):
         newkeyring.add(destopt["destkey"])
         newrobotchs = fromchs.copy()
         newrobotchs[destopt["vaultnum"]] = destopt["destkey"]
-        #print(newrobotchs,newkeyring)
-        #exit(1)
-        stepsafterroute = getstepstocomplete(newrobotchs,newkeyring)
-        #not updated to support multiple robots yet
-        destoptstep = stepsdir[fromch][destopt] + stepsafterroute
-        destoptsteps.append(destoptstep)
+        stepsafterdestopt = getstepstocomplete(newrobotchs,newkeyring)
+        #not updated to support multiple robots yet:
+        #destoptstep = stepsdir[fromch][destopt] + stepsafterroute
+        stepstodestopt = vaults[destopt["vaultnum"]]["stepsdir"][fromchs[destopt["vaultnum"]]][destopt["destkey"]]
+        destoptstep = stepstodestopt + stepsafterdestopt
+        destoptsteps.append(destoptstep)        
+
     # pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
