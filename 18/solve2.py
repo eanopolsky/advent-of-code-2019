@@ -88,9 +88,12 @@ for vault in vaults:
     keyspresent = set()
     computeroutes(mymap,vault["robotstartloc"])
     vault["accessiblelocations"] = set()
+    vault["accessiblekeys"] = set()
     for loc in mymap:
         if "dist" in mymap[loc]:
             vault["accessiblelocations"].add(loc)
+            if mymap[loc]["ch"] in keys:
+                vault["accessiblekeys"].add(mymap[loc]["ch"])
     clearroutes(mymap)
     startchars = set(["@"])
 
