@@ -73,4 +73,29 @@ def findrightsidesmart(y):
                 return xguess
             xguess += 1
 
-print(findrightsidesmart(200000))
+#print(findrightsidesmart(200000))
+def will100x100fitat(y):
+    xright = findrightsidesmart(y)
+    xleft = xright - 99 #100 spaces inclusive
+    if xleft < 0: #common sense check
+        return False
+    if testspace(xleft,y) == 0: #100 space line won't fit
+        return False
+    if testspace(xleft,y+99) == 1:
+        return True #diagonal opposite corner will fit
+    else:
+        return False
+
+ylow = 100
+yhigh = 10000
+while True:
+    ymid = int((ylow + yhigh)/2)
+    if will100x100fitat(ymid):
+        yhigh = ymid
+    else:
+        ylow = ymid
+    if yhigh - ylow == 1:
+        #print(yhigh)
+        break
+answer = (findrightsidesmart(yhigh)-99)*10000 + yhigh
+print(answer)
