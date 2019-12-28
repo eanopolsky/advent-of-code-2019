@@ -181,23 +181,30 @@ def getstepstocomplete(fromchs,keyring):
             vault = vaults[i]
             try:
                 if vault["keysneededtoaccess"][neededkey].issubset(keyring):
-                    destopts.append(tuple([i,neededkey]))
+                    destopt = {"vaultnum": i,
+                               "destkey": neededkey}
+                    destopts.append(destopt)
             except KeyError:
-                #key not available in this vault
+                #neededkey not available in vault i
                 pass
     if debug:
         print("available next steps: {}".format(destopts))
         input("press enter to continue")
-    exit(1)
+
     destoptsteps = []
     for destopt in destopts:
         newkeyring = keyring.copy()
-        newkeyring.add(destopt)
-        stepsafterroute = getstepstocomplete(destopt,newkeyring)
+        newkeyring.add(destopt["destkey"])
+        newrobotchs = fromchs.copy()
+        newrobotchs[destopt["vaultnum"]] = destopt["destkey"]
+        #print(newrobotchs,newkeyring)
+        #exit(1)
+        stepsafterroute = getstepstocomplete(newrobotchs,newkeyring)
+        #not updated to support multiple robots yet
         destoptstep = stepsdir[fromch][destopt] + stepsafterroute
         destoptsteps.append(destoptstep)
     # pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
-print(getstepstocomplete(fromchs=tuple(["@" for vault in vaults]),keyring=set()))
+print(getstepstocomplete(fromchs=["@" for vault in vaults],keyring=set()))
 
