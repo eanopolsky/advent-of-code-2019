@@ -47,13 +47,20 @@ for loc in mymap:
         else:
             mymap[loc]["portal"] = portal
 
-for loc in mymap:
-    try:
-        print(mymap[loc]["portal"])
-    except KeyError:
-        pass
-exit(1)
+# #portal tag check:
+#
+# for loc in mymap:
+#     try:
+#         print(mymap[loc]["portal"])
+#     except KeyError:
+#         pass
+# exit(1)
 
+for loc in mymap:
+    if "start" in mymap[loc]:
+        startloc = loc
+print(startloc)
+exit(1)
 # def clearroutes(themap):
 #     for loc in themap:
 #         try:
