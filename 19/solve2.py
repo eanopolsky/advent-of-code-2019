@@ -35,25 +35,26 @@ def testspace(x,y):
 ystart = 200
 yend = ystart * 2
 
-#find left side of beam at ystart by brute force
-x = 0
-xstartleft = 0
-while True:
-    if testspace(x,ystart) == 1:
-        xstartleft = x
-        break
-    x += 1
+def findedgesbruteforce(y):
+    #find left side of beam at ystart by brute force
+    x = 0
+    xleft = 0
+    while True:
+        if testspace(x,y) == 1:
+            xleft = x
+            break
+        x += 1
 
-#find right side of beam at ystart by brute force
-x = xstartleft
-xstartright = 0
-while True:
-    if testspace(x,ystart) == 0:
-        xstartright = x-1
-        break
-    x += 1
+    #find right side of beam at ystart by brute force
+    x = xleft
+    xright = 0
+    while True:
+        if testspace(x,y) == 0:
+            xright = x-1
+            break
+        x += 1
+    return xleft, xright
 
-print(xstartleft)
-print(xstartright)
+print(findedgesbruteforce(ystart))
 
         
