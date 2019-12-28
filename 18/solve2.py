@@ -117,6 +117,17 @@ for vault in vaults:
             routes.append(route)
         clearroutes(mymap)
     vault["routes"] = routes
+    stepsdir = {} #"fromlocation": {"tolocation1": 20, "loc2": 33, ...
+    for routestartchar in routestartchars:
+        stepsdir[routestartchar] = {}
+        for routeendchar in vault["accessiblekeys"]:
+            if routestartchar == routeendchar:
+                continue
+            stepsdir[routestartchar][routeendchar] = {}
+    for route in vault["routes"]:
+        stepsdir[route["startch"]][route["endch"]] = route["steps"]
+    vault["stepsdir"] = stepsdir
+
     
 for vault in vaults:
     print(vault)
@@ -135,15 +146,6 @@ exit(1)
 # 1. The number of steps from each key (or @) to each other key.
 # 2. The keys needed to get from @ to each key.
 
-stepsdir = {} #"fromlocation": {"tolocation1": 20, "loc2": 33, ...
-for routestartchar in routestartchars:
-    stepsdir[routestartchar] = {}
-    for routeendchar in keys:
-        if routestartchar == routeendchar:
-            continue
-        stepsdir[routestartchar][routeendchar] = {}
-for route in routes:
-    stepsdir[route["startch"]][route["endch"]] = route["steps"]
 
 keysneededtoaccess = {} #"a": set('b','c'), "b": set("x","y"), ...
 for route in routes:
