@@ -76,15 +76,11 @@ def computeroutes(themap,startloc):
                     newwavefront.append(n)
         wavefront = newwavefront
 
-
-
 vaults = []
 for robotstartloc in robotstartlocs:
     vault = {}
     vault["robotstartloc"] = robotstartloc
     vaults.append(vault)
-# print(vaults)
-# exit(1)
 
 #Because the map is simply connected, the keys that are required to
 #reach any given destination fall into two sets:
@@ -147,14 +143,10 @@ for vault in vaults:
         keysneededtoaccess[route["endch"]] = keysneeded
     vault["keysneededtoaccess"] = keysneededtoaccess
 
-# for vault in vaults:
-#     print(vault)
-
-
 
 pathcache = {}
 #entries:
-# tuple(fromch,set(keyring)): numsteps
+# tuple([fromch,tuple(sorted(list(keyring)))]): numsteps
 
 # fromchs is now a list the same length as vaults.
 #
