@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 
-debug = False
+#debug = False
 #debug = True
 
-#inputfile = "sample2.txt"
-#inputfile = "sample3.txt"
-inputfile = "myinput.txt"
+inputfile = "sample1.txt"
+#inputfile = "myinput.txt"
 
 from asciifb import asciifb
 
@@ -14,9 +13,9 @@ with open(inputfile,"r") as f:
     for line in f:
         for char in line:
             myfb.receivechar(char)
+#myfb.render()
 
 mymap = myfb.getmap()
-startloc = [coord for coord in mymap if mymap[coord]["ch"] == "@"][0]
 
 def getneighbors(loc):
     neighbors = []
@@ -26,34 +25,39 @@ def getneighbors(loc):
     neighbors.append((loc[0],loc[1]+1))
     return neighbors
 
-def clearroutes(themap):
-    for loc in themap:
-        try:
-            del themap[loc]["dist"]
-        except KeyError:
-            pass
-        try:
-            del themap[loc]["barriers"]
-        except KeyError:
-            pass
-
-
-keys = []
+# tag portal-adjacent spaces
+letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 for loc in mymap:
-    if 97 <= ord(mymap[loc]["ch"]) <= 122: #lower case letters
-        keys.append(mymap[loc]["ch"])
-#keys = "abcdefghijklmnopqrstuvwxyz"
-keys = set(keys)
-doors = set([key.upper() for key in keys])
-routestartchars = keys.copy()
-routestartchars.add("@")
+    if mymap[loc]["ch"] == ".":
+        portal = ""
+        if mymap[(loc[0]-1,loc[1])]["ch"] in letters:
+            portal = mymap[(loc[0]-2,loc[1])]["ch"] + mymap[(loc[0]-1,loc[1])]["ch"]
+        elif mymap[(loc[0]+1,loc[1])]["ch"] in letters:
+            portal = mymap[(loc[0]+1,loc[1])]["ch"] + mymap[(loc[0]+2,loc[1])]["ch"]
+        elif mymap[(loc[0],loc[1]-1)]["ch"] in letters:
+            portal = mymap[(loc[0],loc[1]-2)]["ch"] + mymap[(loc[0],loc[1]-1)]["ch"]
+        elif mymap[(loc[0],loc[1]+1)]["ch"] in letters:
+            portal = mymap[(loc[0],loc[1]+1)]["ch"] + mymap[(loc[0],loc[1]+2)]["ch"]
+        else:
+            continue
+        mymap[loc]["portal"] = portal
+for loc in mymap:
+    try:
+        print(mymap[loc]["portal"])
+    except KeyError:
+        pass
+exit(1)
 
-# need to build a route map:
-#
-# from: starting location (either @ or a key)
-# to: ending location (always a key)
-# barriers: list of doors traversed on the way
-# steps: step count for route
+# def clearroutes(themap):
+#     for loc in themap:
+#         try:
+#             del themap[loc]["dist"]
+#         except KeyError:
+#             pass
+#         try:
+#             del themap[loc]["barriers"]
+#         except KeyError:
+#             pass
 
 def computeroutes(themap,startloc):
     themap[startloc]["dist"] = 0
