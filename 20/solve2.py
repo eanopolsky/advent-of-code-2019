@@ -97,6 +97,8 @@ def addlayer():
     newlayer = deepcopy(originalmap)
     layernum = len(layers)
     layers.append(newlayer)
+    for loc in newlayer:
+        newlayer[loc]["layer"] = layernum
     if layernum == 0:
         for loc in newlayer:
             try:
