@@ -24,6 +24,12 @@ class asciifb:
             print("wrong type passed to receivechar")
             exit(1)
         self.receiveint(ord(ch))
+    def setpixel(self,x,y,v):
+        if type(v) != type(""):
+            print("invalid character type: {}".format(type(v)))
+            exit(1)
+        self.screenmap[(x,y)] = {}
+        self.screenmap[(x,y)]["ch"] = v
     def getmap(self):
         return self.screenmap
     def render(self):
@@ -34,6 +40,9 @@ class asciifb:
                 try:
                     print(self.screenmap[(rx,ry)]["ch"],end="")
                 except KeyError:
+                    if self.screenmap[(rx-1,ry)]["ch"] != "\n":
+                        #line is not newline-terminated
+                        print("") #render line properly
                     break
                 rx += 1
             ry += 1

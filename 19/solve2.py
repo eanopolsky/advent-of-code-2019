@@ -17,5 +17,8 @@ for y in range(50):
         beamscanner.queueinput(y)
         beamscanner.setoutputmode("queue")
         beamscanner.run()
-        affectedpoints += beamscanner.getoutput()
-print(affectedpoints)
+        if beamscanner.getoutput() == 1:
+            beamfb.setpixel(x,y,"#")
+        else:
+            beamfb.setpixel(x,y,".")
+beamfb.render()
