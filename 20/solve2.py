@@ -5,9 +5,9 @@ from copy import deepcopy
 #debug = False
 #debug = True
 
-inputfile = "sample1.txt"
+#inputfile = "sample1.txt"
 #inputfile = "sample2.txt"
-#inputfile = "myinput.txt"
+inputfile = "myinput.txt"
 
 from asciifb import asciifb
 
@@ -234,14 +234,14 @@ def getnewwavefront():
 #     print(layers[lloc[0]][lloc[1]])
 # exit(1)
 
-addlayer()
-linkportals()
-computedists(layers,getnewwavefront())
-for layernum in range(len(layers)):
-    for loc in layers[layernum]:
-        if "portal" in layers[layernum][loc]:
-            print(layernum,loc,layers[layernum][loc])
-exit(1)
+# addlayer()
+# linkportals()
+# computedists(layers,getnewwavefront())
+# for layernum in range(len(layers)):
+#     for loc in layers[layernum]:
+#         if "portal" in layers[layernum][loc]:
+#             print(layernum,loc,layers[layernum][loc])
+# exit(1)
 
 olddist2end = "unknown"
 newdist2end = getdist2end()
