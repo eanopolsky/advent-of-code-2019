@@ -136,12 +136,6 @@ def addlayer():
             newlayer[newlayerportalloc]["portaldest"] = (prevlayernum,
                                                          prevlayerportalloc)
 addlayer()
-# addlayer()
-# for layernum in range(len(layers)):
-#     for loc in layers[layernum]:
-#         if "portal" in layers[layernum][loc]:
-#             print(layernum,loc,layers[layernum][loc])
-# exit(1)
 
 for loc in layers[0]:
     if "start" in layers[0][loc]:
@@ -174,9 +168,13 @@ def linkportals():
 
 addlayer()
 linkportals()
+
+for layernum in range(len(layers)):
+    for loc in layers[layernum]:
+        if "portal" in layers[layernum][loc]:
+            print(layernum,loc,layers[layernum][loc])
+
 exit(1)
-
-
 
 def getneighborspaces(loc):
     adjacent = []
