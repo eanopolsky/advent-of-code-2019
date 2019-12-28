@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-debug = False
-#debug = True
+#debug = False
+debug = True
 
 inputfile = "sample1b.txt"
 #inputfile = "myinput2.txt"
@@ -147,8 +147,6 @@ for vault in vaults:
 
 # for vault in vaults:
 #     print(vault)
-exit(1)
-
 
 
 
@@ -167,20 +165,30 @@ def getstepstocomplete(fromchs,keyring):
     #pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
     if debug:
         print("")
-        print("now at {}. Keyring: {}".format(fromch, keyring))
+        print("Robot locations: {}. Shared keyring: {}".format(fromchs, keyring))
     # if pathcachekey in pathcache:
     #     return pathcache[pathcachekey]
     if len(keyring) == len(keys):
         # pathcache[pathcachekey] = 0
         return 0
     neededkeys = keys - keyring
+    #destopts now contains tuples of the form (vaultnum, key)
+    # For example, the tuple (1, "c") would mean that we have the option
+    # to dispatch the robot in vaults[1] to key "c".
     destopts = []
     for neededkey in neededkeys:
-        if keysneededtoaccess[neededkey].issubset(keyring):
-            destopts.append(neededkey)
+        for i in range(len(vaults)):
+            vault = vaults[i]
+            try:
+                if vault["keysneededtoaccess"][neededkey].issubset(keyring):
+                    destopts.append(tuple([i,neededkey]))
+            except KeyError:
+                #key not available in this vault
+                pass
     if debug:
         print("available next steps: {}".format(destopts))
         input("press enter to continue")
+    exit(1)
     destoptsteps = []
     for destopt in destopts:
         newkeyring = keyring.copy()
@@ -191,5 +199,5 @@ def getstepstocomplete(fromchs,keyring):
     # pathcache[pathcachekey] = min(destoptsteps)
     return min(destoptsteps)
         
-print(getstepstocomplete("@",set()))
+print(getstepstocomplete(fromchs=tuple(["@" for vault in vaults]),keyring=set()))
 
