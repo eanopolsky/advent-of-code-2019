@@ -211,18 +211,38 @@ computedists(layers,startllocs)
 
 def getdist2end():
     return layers[endlloc[0]][endlloc[1]]["dist"]
-print(getdist2end())
-exit(1)
-# addlayer()
-# linkportals()
-# addlayer()
-# linkportals()
-for layernum in range(len(layers)):
-    for loc in layers[layernum]:
-        if "portal" in layers[layernum][loc]:
-            print(layernum,loc,layers[layernum][loc])
+#print(getdist2end())
 
+# addlayer()
+# linkportals()
+# addlayer()
+# linkportals()
+# for layernum in range(len(layers)):
+#     for loc in layers[layernum]:
+#         if "portal" in layers[layernum][loc]:
+#             print(layernum,loc,layers[layernum][loc])
+
+def getnewwavefront():
+    newwavefront = []
+    wavelayernum = len(layers)-2 # 2nd to last layer
+    wavelayer = layers[wavelayernum]
+    for loc in wavelayer:
+        if ("portaldir" in wavelayer[loc] and
+            wavelayer[loc]["portaldir"] == "in"):
+            newwavefront.append((wavelayernum,loc))
+    return newwavefront
+
+addlayer()
+linkportals()
+print(getnewwavefront())
 exit(1)
+
+olddist2end = 99999999
+newdist2end = getdist2end()
+while newdist2end > olddist2end:
+    addlayer()
+    linkportals()
+    
 
 
 
