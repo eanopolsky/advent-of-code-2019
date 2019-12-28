@@ -166,16 +166,6 @@ def linkportals():
         hlayer[hconnectedspace]["portaldest"] = (llayernum,lconnectedspace)
         llayer[lconnectedspace]["portaldest"] = (hlayernum,hconnectedspace)
 
-# addlayer()
-# linkportals()
-# addlayer()
-# linkportals()
-# for layernum in range(len(layers)):
-#     for loc in layers[layernum]:
-#         if "portal" in layers[layernum][loc]:
-#             print(layernum,loc,layers[layernum][loc])
-
-# exit(1)
 
 def getneighborspaces(lloc):
     layernum = lloc[0]
@@ -199,15 +189,18 @@ def computedists(layers,startlloc):
         newwavefront = []
         for lloc in wavefront:
             ns = getneighborspaces(lloc) #returns only passable neighbors: ., portals
-            print(ns)
-            exit(1)
+            #print(ns)
+            #exit(1)
             for n in ns:
-                if "dist" not in themap[n]:
-                    themap[n]["dist"] = themap[loc]["dist"] + 1
+                if "dist" not in layers[n[0]][n[1]]:
+                    layers[n[0]][n[1]]["dist"] = \
+                        layers[lloc[0]][lloc[1]]["dist"] + 1
                     newwavefront.append(n)
                     continue
-                if themap[n]["dist"] > themap[loc]["dist"] + 1:
-                    themap[n]["dist"] = themap[loc]["dist"] + 1
+                if layers[n[0]][n[1]]["dist"] > \
+                   layers[lloc[0]][lloc[1]]["dist"] + 1:
+                    layers[n[0]][n[1]]["dist"] = \
+                        layers[lloc[0]][lloc[1]]["dist"] + 1
                     newwavefront.append(n)
                     continue
         wavefront = newwavefront
@@ -215,5 +208,18 @@ def computedists(layers,startlloc):
 layers[startlloc[0]][startlloc[1]]["dist"] = 0
 startllocs = [startlloc]
 computedists(layers,startllocs)
+
+# addlayer()
+# linkportals()
+# addlayer()
+# linkportals()
+for layernum in range(len(layers)):
+    for loc in layers[layernum]:
+        if "portal" in layers[layernum][loc]:
+            print(layernum,loc,layers[layernum][loc])
+
+exit(1)
+
+
 
 #print(mymap[endloc]["dist"])
