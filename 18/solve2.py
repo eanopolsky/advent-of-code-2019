@@ -95,31 +95,36 @@ for vault in vaults:
             if mymap[loc]["ch"] in keys:
                 vault["accessiblekeys"].add(mymap[loc]["ch"])
     clearroutes(mymap)
-    startchars = set(["@"])
+    routestartchars = set(["@"]).union(vault["accessiblekeys"])
 
-print(vaults)
+    #find all routes within vault
+    routes = []
+    for routestartloc in mymap:
+        if routestartloc not in vault["accessiblelocations"]:
+            continue
+        if mymap[routestartloc]["ch"] not in routestartchars:
+            continue
+        computeroutes(mymap,routestartloc)
+        for routeendloc in mymap:
+            if mymap[routeendloc]["ch"] not in vault["accessiblekeys"]:
+                continue
+            if routeendloc == routestartloc:
+                continue
+            route = {"startch": mymap[routestartloc]["ch"],
+                     "endch": mymap[routeendloc]["ch"],
+                     "barriers": mymap[routeendloc]["barriers"],
+                     "steps": mymap[routeendloc]["dist"]}
+            routes.append(route)
+        clearroutes(mymap)
+    vault["routes"] = routes
+    
+for vault in vaults:
+    print(vault)
 exit(1)
     
     
 
 
-#find all possible routes
-routes = []
-for routestartloc in mymap:
-    if mymap[routestartloc]["ch"] not in routestartchars:
-        continue
-    computeroutes(mymap,routestartloc)
-    for routeendloc in mymap:
-        if mymap[routeendloc]["ch"] not in keys:
-            continue
-        if routeendloc == routestartloc:
-            continue
-        route = {"startch": mymap[routestartloc]["ch"],
-                 "endch": mymap[routeendloc]["ch"],
-                 "barriers": mymap[routeendloc]["barriers"],
-                 "steps": mymap[routeendloc]["dist"]}
-        routes.append(route)
-    clearroutes(mymap)
 
 #Because the map is simply connected, the keys that are required to
 #reach any given destination fall into two sets:
