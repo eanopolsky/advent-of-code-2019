@@ -156,7 +156,14 @@ pathcache = {}
 #entries:
 # tuple(fromch,set(keyring)): numsteps
 
-def getstepstocomplete(fromch,keyring):
+# fromchs is now a list the same length as vaults.
+#
+# Each element of fromchs is a character referencing the current location
+# of the robot in that vault. For example, if fromchs[2] == "v", then the
+# robot in vaults[2] is at key "v".
+#
+# keyring is a shared keyring among all robots
+def getstepstocomplete(fromchs,keyring):
     pathcachekey = tuple([fromch, tuple(sorted(list(keyring)))])
     if debug:
         print("")
