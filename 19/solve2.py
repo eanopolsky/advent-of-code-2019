@@ -55,6 +55,22 @@ def findedgesbruteforce(y):
         x += 1
     return xleft, xright
 
-print(findedgesbruteforce(ystart))
+xstartleft, xstartright = findedgesbruteforce(ystart)
+xendleft, xendright = findedgesbruteforce(yend)
 
-        
+rightslopeapprox = (yend-ystart) / (xendright-xstartright)
+
+def findrightsidesmart(y):
+    xguess = int(y / rightslopeapprox)
+    if testspace(xguess,y) == 0: #outside of beam. xguess too high.
+        while True:
+            xguess -= 1
+            if testspace(xguess,y) == 1:
+                return xguess
+    else: #inside beam. xguess exactly right or too low.
+        while True:
+            if testspace(xguess+1,y) == 0:
+                return xguess
+            xguess += 1
+
+print(findrightsidesmart(200000))
