@@ -117,6 +117,7 @@ for vault in vaults:
             routes.append(route)
         clearroutes(mymap)
     vault["routes"] = routes
+    #store graph edge cost for this vault in steps directory:
     stepsdir = {} #"fromlocation": {"tolocation1": 20, "loc2": 33, ...
     for routestartchar in routestartchars:
         stepsdir[routestartchar] = {}
@@ -153,12 +154,6 @@ for route in routes:
         continue
     keysneeded = set([barrier.lower() for barrier in route["barriers"]])
     keysneededtoaccess[route["endch"]] = keysneeded
-
-# for start in stepsdir:
-#     print("{}: {}".format(start,stepsdir[start]))
-# for key in keysneededtoaccess:
-#     print("{}: {}".format(key,keysneededtoaccess[key]))
-# exit(1)
 
 pathcache = {}
 #entries:
