@@ -120,8 +120,11 @@ class intcodevm:
             exit(1)
 
     def printascii(self,n):
-        print(chr(n),end="")
-    
+        try:
+            print(chr(n),end="")
+        except ValueError:
+            print("Out of bounds integer received: {}".format(n))
+            
     def getoutput(self):
         return self.outputqueue.get()
 
