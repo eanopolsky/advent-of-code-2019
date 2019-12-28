@@ -64,9 +64,20 @@ portalnames = set()
 for loc in mymap:
     if "portal" in mymap[loc]:
         portalnames.add(mymap[loc]["portal"])
-print(portalnames)
-exit(1)
 
+for portalname in portalnames:
+    connectedspaces = [loc for loc in mymap if "portal" in mymap[loc] and mymap[loc]["portal"] == portalname]
+    if len(connectedspaces) != 2:
+        print("error while finding linked spaces")
+        exit(1)
+    else:
+        mymap[connectedspaces[0]]["portaldest"] = connectedspaces[1]
+        mymap[connectedspaces[1]]["portaldest"] = connectedspaces[0]
+
+for loc in mymap:
+    if "portaldest" in mymap[loc]:
+        print("{} links to {}".format(loc,mymap[loc]["portaldest"]))
+exit(1)
 # def clearroutes(themap):
 #     for loc in themap:
 #         try:
