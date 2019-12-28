@@ -40,7 +40,13 @@ for loc in mymap:
             portal = mymap[(loc[0],loc[1]+1)]["ch"] + mymap[(loc[0],loc[1]+2)]["ch"]
         else:
             continue
-        mymap[loc]["portal"] = portal
+        if portal == "AA":
+            mymap[loc]["start"] = True
+        elif portal == "ZZ":
+            mymap[loc]["end"] = True
+        else:
+            mymap[loc]["portal"] = portal
+
 for loc in mymap:
     try:
         print(mymap[loc]["portal"])
