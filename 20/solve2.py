@@ -243,14 +243,10 @@ def getnewwavefront():
 #             print(layernum,loc,layers[layernum][loc])
 # exit(1)
 
-olddist2end = "unknown"
-newdist2end = getdist2end()
-while newdist2end == "unknown":
-    olddist2end = newdist2end
+while getdist2end() == "unknown":
     addlayer()
-    print(len(layers)) #gets to at least 50 layers. Fishy.
     linkportals()
     computedists(layers,getnewwavefront())
-    newdist2end = getdist2end()
+    print("total layers: {}".format(len(layers)))
 
 print(getdist2end())
