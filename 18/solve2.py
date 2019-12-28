@@ -44,8 +44,6 @@ for loc in mymap:
 #keys = "abcdefghijklmnopqrstuvwxyz"
 keys = set(keys)
 doors = set([key.upper() for key in keys])
-routestartchars = keys.copy()
-routestartchars.add("@")
 
 # need to build a route map:
 #
