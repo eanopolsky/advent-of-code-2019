@@ -85,9 +85,6 @@ for loc in mymap:
         else:
             mymap[loc]["portaldir"] = "out"
 
-print(mymap)
-exit(1)
-
 originalmap = mymap
 layers = []
 
@@ -102,17 +99,41 @@ def addlayer():
     layers.append(newlayer)
     if layernum == 0:
         for loc in newlayer:
-            if newlayer[loc]["portal"] == "AA":
-                newlayer[loc]["start"] = True
-            if newlayer[loc]["portal"] == "ZZ":
-                newlayer[loc]["end"] = True
+            try:
+                if newlayer[loc]["portal"] == "AA":
+                    newlayer[loc]["start"] = True
+                if newlayer[loc]["portal"] == "ZZ":
+                    newlayer[loc]["end"] = True
+            except KeyError:
+                pass
     else:
-        prevlayer = layernum - 1
-        #incomplete. needs portal linking between this
-        #layer and previous layer
-                
-
+        prevlayernum = layernum -1
+        prevlayer = layers[prevlayernum]
+        for portalname in portalnames:
+            if portalname == "AA" or portalname == "ZZ":
+                continue
+            for loc in newlayer:
+                if (newlayer[loc]["portal"] == portalname and
+                    newlayer[loc]["portaldir"] == "out"):
+                    newlayerportalloc = loc
+                    break
+            for loc in prevlayer:
+                if (prevlayer[loc]["portal"] == portalname and
+                    prevlayer[loc]["portaldir"] == "in"):
+                    prevlayerportalloc = loc
+                    break
+            #portaldest now includes a destination layer and location
+            prevlayer[prevlayerportalloc]["portaldest"] = (newlayernum,
+                                                           newlayerportalloc)
+            newlayer[newlayerportalloc]["portaldest"] = (prevlayernum,
+                                                         prevlayerportalloc)
+addlayer()
+for layernum in range(len(layers)):
+    for loc in layers[layernum]:
+        if "portal" in layers[layernum][loc]:
+            print(layernum,loc,layers[layernum][loc])
 exit(1)
+
 for loc in mymap:
     if "start" in mymap[loc]:
         startloc = loc
