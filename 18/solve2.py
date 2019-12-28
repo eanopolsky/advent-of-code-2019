@@ -15,7 +15,8 @@ with open(inputfile,"r") as f:
             myfb.receivechar(char)
 
 mymap = myfb.getmap()
-startloc = [coord for coord in mymap if mymap[coord]["ch"] == "@"][0]
+# multiple robot start locations
+robotstartlocs = [coord for coord in mymap if mymap[coord]["ch"] == "@"]
 
 def getneighbors(loc):
     neighbors = []
@@ -35,7 +36,6 @@ def clearroutes(themap):
             del themap[loc]["barriers"]
         except KeyError:
             pass
-
 
 keys = []
 for loc in mymap:
@@ -75,6 +75,31 @@ def computeroutes(themap,startloc):
                         themap[n]["barriers"].append(ch)
                     newwavefront.append(n)
         wavefront = newwavefront
+
+
+
+vaults = []
+for robotstartloc in robotstartlocs:
+    vault = {}
+    vault["robotstartloc"] = robotstartloc
+    vaults.append(vault)
+# print(vaults)
+# exit(1)
+
+for vault in vaults:
+    keyspresent = set()
+    computeroutes(mymap,vault["robotstartloc"])
+    vault["keyspresent"] = set()
+    for loc in mymap:
+        if mymap[loc]["ch"] in keys and "dist" in mymap[loc]:
+            vault["keyspresent"].add(mymap[loc]["ch"])
+    clearroutes(mymap)
+
+print(vaults)
+exit(1)
+    
+    
+
 
 #find all possible routes
 routes = []
