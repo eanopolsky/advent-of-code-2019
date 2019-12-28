@@ -209,6 +209,10 @@ layers[startlloc[0]][startlloc[1]]["dist"] = 0
 startllocs = [startlloc]
 computedists(layers,startllocs)
 
+def getdist2end():
+    return layers[endlloc[0]][endlloc[1]]["dist"]
+print(getdist2end())
+exit(1)
 # addlayer()
 # linkportals()
 # addlayer()
