@@ -128,6 +128,13 @@ for vault in vaults:
     for route in vault["routes"]:
         stepsdir[route["startch"]][route["endch"]] = route["steps"]
     vault["stepsdir"] = stepsdir
+    keysneededtoaccess = {} #"a": set('b','c'), "b": set("x","y"), ...
+    for route in vault["routes"]:
+        if route["startch"] != "@":
+            continue
+        keysneeded = set([barrier.lower() for barrier in route["barriers"]])
+        keysneededtoaccess[route["endch"]] = keysneeded
+    vault["keysneededtoaccess"] = keysneededtoaccess
 
     
 for vault in vaults:
@@ -148,12 +155,6 @@ exit(1)
 # 2. The keys needed to get from @ to each key.
 
 
-keysneededtoaccess = {} #"a": set('b','c'), "b": set("x","y"), ...
-for route in routes:
-    if route["startch"] != "@":
-        continue
-    keysneeded = set([barrier.lower() for barrier in route["barriers"]])
-    keysneededtoaccess[route["endch"]] = keysneeded
 
 pathcache = {}
 #entries:
