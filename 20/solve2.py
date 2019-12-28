@@ -136,33 +136,47 @@ def addlayer():
             newlayer[newlayerportalloc]["portaldest"] = (prevlayernum,
                                                          prevlayerportalloc)
 addlayer()
+# addlayer()
+# for layernum in range(len(layers)):
+#     for loc in layers[layernum]:
+#         if "portal" in layers[layernum][loc]:
+#             print(layernum,loc,layers[layernum][loc])
+# exit(1)
+
+for loc in layers[0]:
+    if "start" in layers[0][loc]:
+        startloc = (0,loc)
+    if "end" in layers[0][loc]:
+        endloc = (0,loc)
+
+def linkportals():
+    if (len(layers) == 1):
+        return #no portals to link
+    for portalname in portalnames:
+        if portalname == "AA" or portalname == "ZZ":
+            continue
+        hlayernum = len(layers)-2
+        hlayer = layers[hlayernum]
+        llayernum = len(layers)-1
+        llayer = layers[llayernum]
+        hconnectedspace = [loc for loc in hlayer
+                           if "portal" in hlayer[loc]
+                           and hlayer[loc]["portal"] == portalname
+                           and hlayer[loc]["portaldir"] == "in"][0]
+        lconnectedspace = [loc for loc in llayer
+                           if "portal" in llayer[loc]
+                           and llayer[loc]["portal"] == portalname
+                           and llayer[loc]["portaldir"] == "out"][0]
+        #print(hconnectedspace,lconnectedspace)
+        #exit(1)
+        hlayer[hconnectedspace]["portaldest"] = (llayernum,lconnectedspace)
+        llayer[lconnectedspace]["portaldest"] = (hlayernum,hconnectedspace)
+
 addlayer()
-for layernum in range(len(layers)):
-    for loc in layers[layernum]:
-        if "portal" in layers[layernum][loc]:
-            print(layernum,loc,layers[layernum][loc])
+linkportals()
 exit(1)
 
-for loc in mymap:
-    if "start" in mymap[loc]:
-        startloc = loc
-    if "end" in mymap[loc]:
-        endloc = loc
 
-
-for portalname in portalnames:
-    connectedspaces = [loc for loc in mymap if "portal" in mymap[loc] and mymap[loc]["portal"] == portalname]
-    if len(connectedspaces) != 2:
-        print("error while finding linked spaces")
-        exit(1)
-    else:
-        mymap[connectedspaces[0]]["portaldest"] = connectedspaces[1]
-        mymap[connectedspaces[1]]["portaldest"] = connectedspaces[0]
-
-# #shows links between spaces that have portals
-# for loc in mymap:
-#     if "portaldest" in mymap[loc]:
-#         print("{} links to {}".format(loc,mymap[loc]["portaldest"]))
 
 def getneighborspaces(loc):
     adjacent = []
