@@ -59,8 +59,14 @@ for loc in mymap:
 for loc in mymap:
     if "start" in mymap[loc]:
         startloc = loc
-print(startloc)
+
+portalnames = set()
+for loc in mymap:
+    if "portal" in mymap[loc]:
+        portalnames.add(mymap[loc]["portal"])
+print(portalnames)
 exit(1)
+
 # def clearroutes(themap):
 #     for loc in themap:
 #         try:
@@ -74,7 +80,6 @@ exit(1)
 
 def computeroutes(themap,startloc):
     themap[startloc]["dist"] = 0
-    themap[startloc]["barriers"] = []
     wavefront = [startloc]
     while len(wavefront) != 0:
         newwavefront = []
