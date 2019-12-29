@@ -4,7 +4,7 @@ from asciifb import asciifb
 from copy import deepcopy
 
 inputfile = "myinput.txt"
-inputfile = "sample1.txt"
+#inputfile = "sample1.txt"
 
 
 myfb = asciifb()
@@ -71,6 +71,14 @@ def evolvemap(oldmap):
             pass #ignore newline spaces
     return newmap
                 
-myfb.render()
-myfb.setmap(evolvemap(mymap))
-myfb.render()
+# myfb.render()
+# myfb.setmap(evolvemap(mymap))
+# myfb.render()
+
+seenstates = set()
+while True:
+    seenstates.add(serializemap(mymap))
+    mymap = evolvemap(mymap)
+    if serializemap(mymap) in seenstates:
+        print(calcbrating(mymap))
+        break
