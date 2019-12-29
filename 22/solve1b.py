@@ -10,7 +10,6 @@ with open(inputfile,"r") as f:
     for line in f:
         line = line.rstrip("\n")
         if line == "deal into new stack":
-            #instructions.append(("reverse",0))
             instructions.append(("multiply",-1))
             instructions.append(("add",-1))
         elif line[0:4] == "cut ":
@@ -25,15 +24,19 @@ with open(inputfile,"r") as f:
 #     print(instruction)
 # exit(1)
 
-
 endposition = startposition
-for instruction in instructions:
-    if instruction[0] == "add":
-        endposition += instruction[1]
-    elif instruction[0] == "multiply":
-        endposition *= instruction[1]
-    else:
-        print("invalid instruction: {}".format(instruction))
-    endposition %= decksize
 
-print(endposition)
+def shuffle(startposition,instructions):
+    pos = startposition
+    for instruction in instructions:
+        if instruction[0] == "add":
+            pos += instruction[1]
+        elif instruction[0] == "multiply":
+            pos *= instruction[1]
+        else:
+            print("invalid instruction: {}".format(instruction))
+        pos %= decksize
+    return pos
+    
+print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,instructions)))
+
