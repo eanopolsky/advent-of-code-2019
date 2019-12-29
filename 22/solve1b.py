@@ -3,6 +3,7 @@
 #inputfile = "sample1.txt"
 inputfile = "myinput.txt"
 decksize = 10007 #10007 is prime. 
+startposition = 2019
 
 instructions = []
 with open(inputfile,"r") as f:
@@ -25,15 +26,14 @@ with open(inputfile,"r") as f:
 # exit(1)
 
 
-position = 2019
+endposition = startposition
 for instruction in instructions:
     if instruction[0] == "add":
-        position = position + instruction[1]
-        position = position % decksize
+        endposition += instruction[1]
     elif instruction[0] == "multiply":
-        position = position * instruction[1]
-        position = position % decksize
+        endposition *= instruction[1]
     else:
         print("invalid instruction: {}".format(instruction))
+    endposition %= decksize
 
-print(position)
+print(endposition)
