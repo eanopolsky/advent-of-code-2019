@@ -94,7 +94,7 @@ for itemset in powerset(items):
      exbotvm.setoutputmode("queue")
      for char in "west\n":
           exbotvm.queueinput(ord(char))
-     while exbotvm.inputqueue.empty() == False:
+     while exbotvm.blockingoninputqueue == False:
           pass #wait for vm to process commands
      while True:
           print(chr(exbotvm.getoutput()),end="")

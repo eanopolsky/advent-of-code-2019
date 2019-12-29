@@ -108,6 +108,7 @@ class intcodevm:
                           "relbase": 0 }
         self.running = False
         self.inputqueue = Queue()
+        self.blockingoninputqueue = False
         self.asciiqueue = Queue()
         self.getinput = input
         self.outputqueue = Queue()
@@ -121,7 +122,7 @@ class intcodevm:
         if mode == "stdin":
             self.getinput = input
         elif mode == "queue":
-            self.getinput = self.inputqueue.get
+            self.getinput = self.getqueueinput
         elif mode == "network":
             if self.nic.getaddress() == -1:
                 print("attempted to connect to network without setting address first")
@@ -133,6 +134,14 @@ class intcodevm:
         else:
             print("unsupported input mode")
             exit(1)
+    def getqueueinput(self):
+        if self.inputqueue.empty():
+            self.blockingoninputqueue = True
+            val = self.inputqueue.get()
+            self.blockingoninputqueue = False
+            return val
+        else:
+            return self.inputqueue.get()
 
     def getasciiinput(self):
         if self.asciiqueue.empty():
