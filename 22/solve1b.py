@@ -37,6 +37,25 @@ def shuffle(startposition,instructions):
             print("invalid instruction: {}".format(instruction))
         pos %= decksize
     return pos
-    
-print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,instructions)))
+
+def compact(instructions):
+    multiplier = 1
+    offset = 0
+    for instruction in instructions:
+        if instruction[0] == "add":
+            offset += instruction[1]
+            offset %= decksize
+        elif instruction[0] == "multiply":
+            multiplier *= instruction[1]
+            multiplier %= decksize
+            offset *= instruction[1]
+            offset %=  decksize
+        else:
+            print("invalid instruction: {}".format(instruction))
+    newinstructions = []
+    newinstructions.append(("multiply",multiplier))
+    newinstructions.append(("add",offset))
+    return newinstructions
+
+print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,compact(instructions))))
 
