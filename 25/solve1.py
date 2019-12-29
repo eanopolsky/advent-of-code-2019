@@ -78,9 +78,10 @@ def gomanual():
      exbotvm.queueinput(ord("\n")) #release exbot from blocking input queue read
 
 exbotvm.setoutputmode("printascii")
-for char in "inv\n":
-     exbotvm.queueinput(ord(char))
-exit(1)
+# for char in "inv\n":
+#      exbotvm.queueinput(ord(char))
+# exit(1)
+
 for itemset in powerset(items):
      #print(itemset)
      #exbotvm.setoutputmode("null")
@@ -88,12 +89,14 @@ for itemset in powerset(items):
           exbotvm.queueinput(ord(char))
      for item in itemset:
           takecmd = ("take " + item + "\n")
-          for char in takeitemcmd:
+          for char in takecmd:
                exbotvm.queueinput(ord(char))
      exbotvm.setoutputmode("queue")
      for char in "west\n":
           exbotvm.queueinput(ord(char))
-     while exbotvm.outputqueue.empty() == False:
+     while exbotvm.inputqueue.empty() == False:
+          pass #wait for vm to process commands
+     while True:
           print(chr(exbotvm.getoutput()),end="")
      break
 
