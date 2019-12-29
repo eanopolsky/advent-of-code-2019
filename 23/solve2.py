@@ -11,13 +11,9 @@ class vswitch:
     def __init__(self):
         self.routingtable = {} #{netaddress: packet_queue_function}
     def putpacket(self,packet):
-        print("vswitch got packet: {}".format(packet))
+        #print("vswitch got packet: {}".format(packet))
         destaddress = packet[0]
-        if destaddress == 255:
-            print(packet[2])
-            exit(0)
-        else:
-            self.routingtable[destaddress](packet[1:])
+        self.routingtable[destaddress](packet[1:])
     def register(self,netaddress,packetqueue):
         self.routingtable[netaddress] = packetqueue
 
@@ -28,11 +24,14 @@ class natdevice:
           self.vswitchputpacket = myswitch.putpacket
           self.vms = []
      def receivepacket(self,packet):
+          print("NAT got packet: {}".format(packet))
           self.storedpacket = packet
      def maybedeliverpacket(self):
           hungryvms = [vm for vm in vms if vm.nic.packetqueue.empty()] #might not work because a vm with an empty queue might not be trying to read from it.
           if len(hungryvms) == len(vms) and len(self.storedpacket) == 2:
-               self.vswitchputpacket([0].extend(self.storedpacket))
+               newpacket = [0]
+               newpacket.extend(self.storedpacket)
+               self.vswitchputpacket(newpacket)
                try:
                     if self.storedpacket[1] == self.lastpacket[1]:
                          print("y value delivered twice: {}".format(self.storedpacket[1]))
@@ -48,9 +47,10 @@ class natdevice:
 
 
 myswitch = vswitch()
-mynatdevice = natdevice(vswitch)
+mynatdevice = natdevice(myswitch)
 vms = []
 mynatdevice.vms = vms
+myswitch.register(255,mynatdevice.receivepacket)
 for i in range(50):
     newvm = intcodevm.intcodevm(memory=memory,
                                 name="node{}".format(i),
