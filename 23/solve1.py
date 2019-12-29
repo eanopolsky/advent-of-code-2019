@@ -16,7 +16,7 @@ class vswitch:
             print(packet[2])
             exit(0)
         else:
-            self.routingtable[destaddress].put(packet[1:])
+            self.routingtable[destaddress](packet[1:])
     def register(self,netaddress,packetqueue):
         self.routingtable[netaddress] = packetqueue
 
@@ -28,7 +28,7 @@ for i in range(50):
                                 netaddress=i)
     newvm.setinputmode("network")
     newvm.setoutputmode("network")
-    myswitch.register(netaddress=i,packetqueue=newvm.nic.packetqueue)
+    myswitch.register(netaddress=i,packetqueue=newvm.nic.packetqueue.put)
     newvm.nic.sendpacket = myswitch.putpacket
     vms.append(newvm)
 
