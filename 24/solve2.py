@@ -133,8 +133,12 @@ def countbugs():
 # rendergrids()
 # print(countbugs())
 
+#rendergrids()
+#input()
 for i in range(200):
     addgridsifnecessary()
     evolvegrids()
+    #rendergrids()
+    #input()
 
 print(countbugs())
