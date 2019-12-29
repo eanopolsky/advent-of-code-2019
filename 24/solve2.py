@@ -60,51 +60,77 @@ def rendergrids():
             print("")
         print("")
     
-addgridsifnecessary()
-addgridsifnecessary()
-rendergrids()
-exit(1)
 
-def getneighborspaces(loc):
-    adjacent = []
-    adjacent.append((loc[0]-1,loc[1]))
-    adjacent.append((loc[0]+1,loc[1]))
-    adjacent.append((loc[0],loc[1]-1))
-    adjacent.append((loc[0],loc[1]+1))
-    return adjacent
+def getneighborspaces(depth,loc):
+    ns = [] #element: {"depth": depth, "loc": loc}
+    #for points on the outside edges
+    if loc[0] == 0:
+        ns.append({"depth": depth - 1, "loc": (1,2)})
+    if loc[0] == 4:
+        ns.append({"depth": depth - 1, "loc": (3,2)})
+    if loc[1] == 0:
+        ns.append({"depth": depth - 1, "loc": (2,1)})
+    if loc[1] == 4:
+        ns.append({"depth": depth - 1, "loc": (2,3)})
+
+    #for points on the inside edges:
+    if loc == (2,1):
+        for x in range(5):
+            ns.append({"depth": depth + 1, "loc": (x,0)})
+    if loc == (2,3):
+        for x in range(5):
+            ns.append({"depth": depth + 1, "loc": (x,4)})
+    if loc == (1,2):
+        for y in range(5):
+            ns.append({"depth": depth + 1, "loc": (0,y)})
+    if loc == (3,2):
+        for y in range(5):
+            ns.append({"depth": depth + 1, "loc": (4,y)})
+
+    #neighbors at same depth
+    samedepthoptions = [(loc[0]-1,loc[1]),
+                        (loc[0]+1,loc[1]),
+                        (loc[0],loc[1]-1),
+                        (loc[0],loc[1]+1)]
+    for locopt in samedepthoptions:
+        if 0 <= loc[0] <= 4 and 0 <= loc[1] <= 4:
+            ns.append({"depth": depth, "loc": locopt})
+    return ns
+
+def evolvegrids():
+    newgrids = deepcopy(grids)
+    for depth in grids:
+        for loc in grids[depth]:
+            ns = getneighborspaces(depth=depth,loc=loc)#stopped here
+
+# addgridsifnecessary()
+# addgridsifnecessary()
+# rendergrids()
+# exit(1)
 
 
-def evolvemap(oldmap):
-    newmap = deepcopy(oldmap)
-    for loc in oldmap:
-        ns = getneighborspaces(loc)
-        nbugcount = 0
-        for n in ns:
-            try:
-                if oldmap[n]["ch"] == "#":
-                    nbugcount += 1
-            except KeyError:
-                pass #on map edge
-        if oldmap[loc]["ch"] == "#":
-            if nbugcount == 1:
-                newmap[loc]["ch"] = "#" #unnecessary but clear
-            else:
-                newmap[loc]["ch"] = "."
-        elif oldmap[loc]["ch"] == ".": 
-            if 1 <= nbugcount <= 2:
-                newmap[loc]["ch"] = "#"
-        else:
-            pass #ignore newline spaces
-    return newmap
+
+
+# def evolvemap(oldmap):
+#     newmap = deepcopy(oldmap)
+#     for loc in oldmap:
+#         ns = getneighborspaces(loc)
+#         nbugcount = 0
+#         for n in ns:
+#             try:
+#                 if oldmap[n]["ch"] == "#":
+#                     nbugcount += 1
+#             except KeyError:
+#                 pass #on map edge
+#         if oldmap[loc]["ch"] == "#":
+#             if nbugcount == 1:
+#                 newmap[loc]["ch"] = "#" #unnecessary but clear
+#             else:
+#                 newmap[loc]["ch"] = "."
+#         elif oldmap[loc]["ch"] == ".": 
+#             if 1 <= nbugcount <= 2:
+#                 newmap[loc]["ch"] = "#"
+#         else:
+#             pass #ignore newline spaces
+#     return newmap
                 
-# myfb.render()
-# myfb.setmap(evolvemap(mymap))
-# myfb.render()
-
-seenstates = set()
-while True:
-    seenstates.add(serializemap(mymap))
-    mymap = evolvemap(mymap)
-    if serializemap(mymap) in seenstates:
-        print(calcbrating(mymap))
-        break
