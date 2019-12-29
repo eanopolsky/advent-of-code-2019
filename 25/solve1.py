@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 
+import threading
 import intcodevm
+from time import sleep
 
 with open("myinput.txt","r") as f:
      memory = [int(x) for x in f.readline().split(",")]
 
 exbotvm = intcodevm.intcodevm(memory=memory,name="explore-bot")
 exbotvm.setinputmode("queue")
-exbotvm.setoutputmode("printascii")
+exbotvm.setoutputmode("null")
 collectitemcmds = """east
 take sand
 west
@@ -42,5 +44,12 @@ inv
 for char in collectitemcmds:
      exbotvm.queueinput(ord(char))
 
-exbotvm.run()
-#exbotvm.setinputmode("ascii")
+exbotthread = threading.Thread(group=None,target=exbotvm.run)
+exbotthread.start()
+while exbotvm.inputqueue.empty() == False:
+     sleep(1)
+
+#return manual control:
+exbotvm.setoutputmode("printascii")
+exbotvm.setinputmode("ascii")
+exbotvm.queueinput(ord("\n")) #release exbot from blocking input queue read
