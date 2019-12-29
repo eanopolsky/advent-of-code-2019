@@ -162,10 +162,13 @@ class intcodevm:
                 exit(1)
             else:
                 self.output = self.nic.putint
+        elif mode == "null":
+            self.output = self.nulloutput
         else:
             print("unsupported output mode: {}".format(mode))
             exit(1)
-
+    def nulloutput(self,val):
+        pass
     def printascii(self,n):
         try:
             print(chr(n),end="")
