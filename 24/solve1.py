@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from asciifb import asciifb
+from copy import deepcopy
 
 inputfile = "myinput.txt"
 inputfile = "sample1.txt"
@@ -8,7 +9,6 @@ inputfile = "sample1.txt"
 
 myfb = asciifb()
 myfb.load(inputfile)
-myfb.render()
 mymap = myfb.getmap()
 
 def serializemap(themap):
@@ -39,4 +39,38 @@ def calcbrating(themap):
             brating += 2 ** i
     return brating
 
-print(calcbrating(mymap))
+def getneighborspaces(loc):
+    adjacent = []
+    adjacent.append((loc[0]-1,loc[1]))
+    adjacent.append((loc[0]+1,loc[1]))
+    adjacent.append((loc[0],loc[1]-1))
+    adjacent.append((loc[0],loc[1]+1))
+    return adjacent
+
+
+def evolvemap(oldmap):
+    newmap = deepcopy(oldmap)
+    for loc in oldmap:
+        ns = getneighborspaces(loc)
+        nbugcount = 0
+        for n in ns:
+            try:
+                if oldmap[n]["ch"] == "#":
+                    nbugcount += 1
+            except KeyError:
+                pass #on map edge
+        if oldmap[loc]["ch"] == "#":
+            if nbugcount == 1:
+                newmap[loc]["ch"] = "#" #unnecessary but clear
+            else:
+                newmap[loc]["ch"] = "."
+        elif oldmap[loc]["ch"] == ".": 
+            if 1 <= nbugcount <= 2:
+                newmap[loc]["ch"] = "#"
+        else:
+            pass #ignore newline spaces
+    return newmap
+                
+myfb.render()
+myfb.setmap(evolvemap(mymap))
+myfb.render()

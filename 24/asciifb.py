@@ -32,6 +32,8 @@ class asciifb:
         self.receiveint(ord(ch))
     def getmap(self):
         return self.screenmap
+    def setmap(self,replacement):
+        self.screenmap = replacement
     def render(self):
         rx = 0
         ry = 0
