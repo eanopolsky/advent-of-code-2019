@@ -10,10 +10,10 @@ with open(inputfile,"r") as f:
         line = line.rstrip("\n")
         if line == "deal into new stack":
             #instructions.append(("reverse",0))
-            instructions.append(("multiply",decksize-1))
-            instructions.append(("subtract",1))
+            instructions.append(("multiply",-1))
+            instructions.append(("add",-1))
         elif line[0:4] == "cut ":
-            instructions.append(("subtract",int(line[4:])))
+            instructions.append(("add",-1*int(line[4:])))
         elif line[0:20] == "deal with increment ":
             instructions.append(("multiply",int(line[20:])))
         else:
@@ -27,10 +27,8 @@ with open(inputfile,"r") as f:
 
 position = 2019
 for instruction in instructions:
-    if instruction[0] == "reverse":
-        position = (decksize - 1) - position
-    elif instruction[0] == "subtract":
-        position = position - instruction[1]
+    if instruction[0] == "add":
+        position = position + instruction[1]
         position = position % decksize
     elif instruction[0] == "multiply":
         position = position * instruction[1]
