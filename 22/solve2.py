@@ -2,8 +2,9 @@
 
 #inputfile = "sample1.txt"
 inputfile = "myinput.txt"
-decksize = 10007 #10007 is prime. 
-startposition = 2019
+decksize = 119315717514047 #prime again
+repetitions = 101741582076661
+endposition = 2020
 
 instructions = []
 with open(inputfile,"r") as f:
@@ -19,12 +20,6 @@ with open(inputfile,"r") as f:
         else:
             print("invalid line: {}".format(line))
             exit(1)
-
-# for instruction in instructions:
-#     print(instruction)
-# exit(1)
-
-endposition = startposition
 
 def shuffle(startposition,instructions):
     pos = startposition
@@ -89,8 +84,7 @@ def revinstructions(instructions):
     return revinstructions
             
 instructions = compact(instructions)
-undo = compact(revinstructions(instructions)) # compact not needed, but fun
+undoonce = compact(revinstructions(instructions)) # compact not needed, but fun
 
-print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,instructions)))
-print("card ending up in position {} started in position {}".format(shuffle(startposition,instructions),shuffle(shuffle(startposition,instructions),undo)))
+print("card ending up in position {} started in position {}".format(endposition,shuffle(endposition,undoonce)))
 
