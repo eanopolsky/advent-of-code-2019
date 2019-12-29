@@ -98,12 +98,41 @@ def getneighborspaces(depth,loc):
     return ns
 
 def evolvegrids():
+    global grids
     newgrids = deepcopy(grids)
     for depth in grids:
         for loc in grids[depth]:
-            ns = getneighborspaces(depth=depth,loc=loc)#stopped here
+            if loc == (2,2):
+                continue
+            ns = getneighborspaces(depth=depth,loc=loc)
+            adjacentbugcount = 0
+            for n in ns:
+                try:
+                    if grids[n["depth"]][n["loc"]] == "#":
+                        adjacentbugcount += 1
+                except KeyError:
+                    pass #off the map. no bugs present yet.
+            if grids[depth][loc] == "#" and adjacentbugcount != 1:
+                newgrids[depth][loc] = "."
+            if grids[depth][loc] == "." and adjacentbugcount in [1,2]:
+                newgrids[depth][loc] = "#"
+    grids = newgrids
 
-print(getneighborspaces(0,(1,2)))
+def countbugs():
+    bugcount = 0
+    for depth in grids:
+        for loc in grids[depth]:
+            if grids[depth][loc] == "#":
+                bugcount += 1
+    return bugcount
+
+rendergrids()
+print(countbugs())
+addgridsifnecessary()
+evolvegrids()
+rendergrids()
+print(countbugs())
+# print(getneighborspaces(0,(1,2)))
 # addgridsifnecessary()
 # addgridsifnecessary()
 # rendergrids()
