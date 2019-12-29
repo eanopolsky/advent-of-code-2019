@@ -49,7 +49,52 @@ exbotthread.start()
 while exbotvm.inputqueue.empty() == False:
      sleep(1)
 
-#return manual control:
+print("exbot is at security checkpoint with all items")
+
+items = ["space law space brochure",
+         "fixed point",
+         "candy cane",
+         "sand",
+         "ornament",
+         "fuel cell",
+         "spool of cat6",
+         "wreath"]
+
+dropallitemscmds = ""
+for item in items:
+     dropallitemscmds += ("drop " + item + "\n")
+
+from itertools import chain, combinations
+def powerset(iterable):
+     s = list(iterable)
+     return chain.from_iterable(combinations(s,r) for r in range(len(s)+1))
+
+#print(len(list(powerset(items))) #prints 256: correct for 8 items
+
+def gomanual():
+     #return manual control:
+     exbotvm.setoutputmode("printascii")
+     exbotvm.setinputmode("ascii")
+     exbotvm.queueinput(ord("\n")) #release exbot from blocking input queue read
+
 exbotvm.setoutputmode("printascii")
-exbotvm.setinputmode("ascii")
-exbotvm.queueinput(ord("\n")) #release exbot from blocking input queue read
+for char in "inv\n":
+     exbotvm.queueinput(ord(char))
+exit(1)
+for itemset in powerset(items):
+     #print(itemset)
+     #exbotvm.setoutputmode("null")
+     for char in dropallitemscmds:
+          exbotvm.queueinput(ord(char))
+     for item in itemset:
+          takecmd = ("take " + item + "\n")
+          for char in takeitemcmd:
+               exbotvm.queueinput(ord(char))
+     exbotvm.setoutputmode("queue")
+     for char in "west\n":
+          exbotvm.queueinput(ord(char))
+     while exbotvm.outputqueue.empty() == False:
+          print(chr(exbotvm.getoutput()),end="")
+     break
+
+gomanual()
