@@ -126,41 +126,15 @@ def countbugs():
                 bugcount += 1
     return bugcount
 
-rendergrids()
-print(countbugs())
-addgridsifnecessary()
-evolvegrids()
-rendergrids()
-print(countbugs())
-# print(getneighborspaces(0,(1,2)))
-# addgridsifnecessary()
-# addgridsifnecessary()
 # rendergrids()
-# exit(1)
+# print(countbugs())
+# addgridsifnecessary()
+# evolvegrids()
+# rendergrids()
+# print(countbugs())
 
+for i in range(200):
+    addgridsifnecessary()
+    evolvegrids()
 
-
-
-# def evolvemap(oldmap):
-#     newmap = deepcopy(oldmap)
-#     for loc in oldmap:
-#         ns = getneighborspaces(loc)
-#         nbugcount = 0
-#         for n in ns:
-#             try:
-#                 if oldmap[n]["ch"] == "#":
-#                     nbugcount += 1
-#             except KeyError:
-#                 pass #on map edge
-#         if oldmap[loc]["ch"] == "#":
-#             if nbugcount == 1:
-#                 newmap[loc]["ch"] = "#" #unnecessary but clear
-#             else:
-#                 newmap[loc]["ch"] = "."
-#         elif oldmap[loc]["ch"] == ".": 
-#             if 1 <= nbugcount <= 2:
-#                 newmap[loc]["ch"] = "#"
-#         else:
-#             pass #ignore newline spaces
-#     return newmap
-                
+print(countbugs())
