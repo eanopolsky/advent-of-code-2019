@@ -86,5 +86,20 @@ def revinstructions(instructions):
 instructions = compact(instructions)
 undoonce = compact(revinstructions(instructions)) # compact not needed, but fun
 
-print("card ending up in position {} started in position {}".format(endposition,shuffle(endposition,undoonce)))
+repdigits = [int(i) for i in list(str(repetitions))]
+repdigits.reverse() #first elements is in 1s place, 2nd in 10s place, etc.
+undoxtimes = {1: undoonce}
+for i in range(1,len(repdigits)):
+    placevalue = 10 ** i
+    lastplacevalue = 10 ** (i-1)
+    newinstructions = undoxtimes[lastplacevalue] * 10
+    newinstructions = compact(newinstructions)
+    undoxtimes[placevalue] = newinstructions
+
+repundo = []
+for i in range(len(repdigits)):
+    repundo.extend(undoxtimes[10**i]*repdigits[i])
+    repundo = compact(repundo)
+
+print("card ending up in position {} started in position {}".format(endposition,shuffle(endposition,repundo)))
 
