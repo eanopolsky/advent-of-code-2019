@@ -93,7 +93,7 @@ def getneighborspaces(depth,loc):
                         (loc[0],loc[1]-1),
                         (loc[0],loc[1]+1)]
     for locopt in samedepthoptions:
-        if 0 <= loc[0] <= 4 and 0 <= loc[1] <= 4:
+        if 0 <= locopt[0] <= 4 and 0 <= locopt[1] <= 4:
             ns.append({"depth": depth, "loc": locopt})
     return ns
 
@@ -103,6 +103,7 @@ def evolvegrids():
         for loc in grids[depth]:
             ns = getneighborspaces(depth=depth,loc=loc)#stopped here
 
+print(getneighborspaces(0,(1,2)))
 # addgridsifnecessary()
 # addgridsifnecessary()
 # rendergrids()
