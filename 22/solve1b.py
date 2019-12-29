@@ -57,5 +57,40 @@ def compact(instructions):
     newinstructions.append(("add",offset))
     return newinstructions
 
-print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,compact(instructions))))
+#from https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+
+def modinv(a, m):
+    g, x, y = egcd(a, m)
+    if g != 1:
+        raise Exception('modular inverse does not exist')
+    else:
+        return x % m
+
+def revinstructions(instructions):
+    newinstructions = instructions.copy()
+    newinstructions.reverse()
+    revinstructions = []
+    for instruction in newinstructions:
+        if instruction[0] == "add":
+            offset = (instruction[1] * -1) % decksize
+            revinstructions.append(("add",offset))
+        elif instruction[0] == "multiply":
+            multiplier = modinv(instruction[1] % decksize ,decksize)
+            revinstructions.append(("multiply",multiplier))
+        else:
+            print("invalid instruction: {}".format(instruction))
+            exit(1)
+    return revinstructions
+            
+instructions = compact(instructions)
+undo = compact(revinstructions(instructions)) # compact not needed, but fun
+
+print("card starting in position {} ended up in position {}".format(startposition,shuffle(startposition,instructions)))
+print("card ending up in position {} started in position {}".format(shuffle(startposition,instructions),shuffle(shuffle(startposition,instructions),undo)))
 
